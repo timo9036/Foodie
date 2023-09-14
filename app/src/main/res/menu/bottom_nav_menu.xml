@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/recipesFragment"
+        android:title="@string/recipes_fragment"
+        android:icon="@drawable/home"/>
+
+    <item android:id="@+id/favoriteRecipesFragment"
+        android:title="@string/favorite_recipes_fragment"
+        android:icon="@drawable/favorite"/>
+
+    <item android:id="@+id/communityFragment"
+        android:title="@string/community_fragment"
+        android:icon="@drawable/team"/>
+
+    <item android:id="@+id/profileFragment"
+        android:title="@string/profile_fragment"
+        android:icon="@drawable/resume"/>
+
+</menu>
