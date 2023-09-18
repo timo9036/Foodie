@@ -10,7 +10,9 @@ import coil.load
 import com.example.foodie.R
 
 class RecipesItemBinding {
+
     companion object {
+
         @BindingAdapter("loadImageFromUrl")
         @JvmStatic
         fun loadImageFromUrl(imageView: ImageView, imageUrl: String) {
@@ -19,6 +21,7 @@ class RecipesItemBinding {
                 error(R.drawable.error)
             }
         }
+
         @BindingAdapter("applyVeganColor")
         @JvmStatic
         fun applyVeganColor(view: View, vegan: Boolean) {
