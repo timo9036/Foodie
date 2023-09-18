@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="result"
+            type="com.example.foodie.dataclass.Result" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -37,6 +39,7 @@
                     android:layout_width="200dp"
                     android:layout_height="0dp"
                     android:scaleType="centerCrop"
+                    loadImageFromUrl="@{result.image}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -50,11 +53,12 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="12dp"
                     android:ellipsize="end"
+                    android:hint="Lorem ipsum"
                     android:maxLines="2"
+                    android:text="@{result.title}"
                     android:textColor="@color/darker"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:hint="Lorem ipsum"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toEndOf="@+id/recipe_imageView"
@@ -66,8 +70,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:ellipsize="end"
-                    android:maxLines="3"
                     android:hint="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+                    android:maxLines="3"
+                    android:text="@{result.summary}"
                     android:textColor="@color/darkGray"
                     app:layout_constraintEnd_toEndOf="@+id/title_textView"
                     app:layout_constraintStart_toStartOf="@+id/title_textView"
@@ -80,18 +85,18 @@
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="36dp"
                     app:layout_constraintBottom_toBottomOf="@id/heart_textView"
-                    app:layout_constraintStart_toStartOf="@id/description_textView"
-                    app:layout_constraintTop_toBottomOf="@id/description_textView"
                     app:layout_constraintEnd_toStartOf="@id/clock_imageView"
-                    app:tint="@color/red"
+                    app:layout_constraintStart_toEndOf="@id/recipe_imageView"
+                    app:layout_constraintTop_toBottomOf="@id/description_textView"
                     app:srcCompat="@drawable/heart"
-                    />
+                    app:tint="@color/red" />
 
                 <TextView
                     android:id="@+id/heart_textView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:hint="100"
+                    android:text="@{String.valueOf(result.aggregateLikes)}"
                     android:textAlignment="center"
                     android:textColor="@color/red"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -103,49 +108,48 @@
                     android:id="@+id/clock_imageView"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
-                    app:tint="@color/yellow"
-                    app:layout_constraintStart_toEndOf="@id/heart_imageView"
-                    app:layout_constraintTop_toTopOf="@id/heart_imageView"
                     app:layout_constraintBottom_toBottomOf="@id/heart_imageView"
                     app:layout_constraintEnd_toStartOf="@id/leaf_imageView"
-                    app:srcCompat="@drawable/clock" />
+                    app:layout_constraintStart_toEndOf="@id/heart_imageView"
+                    app:layout_constraintTop_toTopOf="@id/heart_imageView"
+                    app:srcCompat="@drawable/clock"
+                    app:tint="@color/yellow" />
 
                 <TextView
                     android:id="@+id/clock_textView"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:hint="100"
+                    android:text="@{String.valueOf(result.readyInMinutes)}"
                     android:textAlignment="center"
                     android:textColor="@color/yellow"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/clock_imageView"
                     app:layout_constraintStart_toStartOf="@+id/clock_imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/clock_imageView"
-                    />
+                    app:layout_constraintTop_toBottomOf="@+id/clock_imageView" />
 
                 <ImageView
                     android:id="@+id/leaf_imageView"
+                    applyVeganColor="@{result.vegan}"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     app:layout_constraintBottom_toBottomOf="@id/heart_imageView"
                     app:layout_constraintEnd_toEndOf="@+id/description_textView"
                     app:layout_constraintStart_toEndOf="@id/clock_imageView"
                     app:layout_constraintTop_toTopOf="@id/heart_imageView"
-                    app:srcCompat="@drawable/broccoli"
-                    />
+                    app:srcCompat="@drawable/broccoli" />
 
                 <TextView
                     android:id="@+id/leaf_textView"
+                    applyVeganColor="@{result.vegan}"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:hint="100"
+                    android:text="Vegan"
                     android:textAlignment="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/leaf_imageView"
                     app:layout_constraintStart_toStartOf="@+id/leaf_imageView"
-                    app:layout_constraintTop_toBottomOf="@+id/leaf_imageView"
-                    />
-
+                    app:layout_constraintTop_toBottomOf="@+id/leaf_imageView" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
