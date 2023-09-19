@@ -5,12 +5,16 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.foodie.data.Repository
+import com.example.foodie.data.database.RecipesEntity
 import com.example.foodie.dataclass.FoodRecipe
 import com.example.foodie.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -21,6 +25,20 @@ class MainViewModel @Inject constructor(
     application: Application
 ) : AndroidViewModel(application) {
 
+    /** Room DataBase */
+    //getting data from the repository, specifically from its local source.
+    //retrieves a Flow object from Room and converts it to LiveData using the .asLiveData() extension function.
+    //This conversion makes the data observable by UI components, which will update when the underlying data changes
+    val readRecipes: LiveData<List<RecipesEntity>> = repository.local.readRecipes().asLiveData()
+
+    //insert a RecipesEntity into the local database,In the coroutine,
+    //the function calls the insertRecipes method on the local repository to store the provided entity.
+    private fun insertRecipes(recipesEntity: RecipesEntity) =
+        viewModelScope.launch (Dispatchers.IO) {
+            repository.local.insertRecipes(recipesEntity)
+        }
+
+    /** Retrofit */
     //hold and observe the results of network requests of type NetworkResult<FoodRecipe>,contain different states such as Success, Error, or Loading
     var recipesResponse: MutableLiveData<NetworkResult<FoodRecipe>> = MutableLiveData()
     //initiate a network request for recipes
@@ -39,12 +57,24 @@ class MainViewModel @Inject constructor(
             try {
                 val response = repository.remote.getRecipes(queries)
                 recipesResponse.value = handleFoodRecipesResponse(response)
+
+                //extract a foodRecipe from a recipesResponse (LiveData)
+                val foodRecipe = recipesResponse.value!!.data
+                if (foodRecipe!=null){
+                    offlineCacheRecipes(foodRecipe)
+                }
             } catch (e: Exception) {
                 recipesResponse.value = NetworkResult.Error("Recipes not found")
             }
         } else {
             recipesResponse.value = NetworkResult.Error("No Internet Connection")
         }
+    }
+
+//converts the FoodRecipe to a RecipesEntity
+    private fun offlineCacheRecipes(foodRecipe: FoodRecipe) {
+        val recipesEntity = RecipesEntity(foodRecipe)
+        insertRecipes(recipesEntity)
     }
 
     //This private function processes the response from the network request.
