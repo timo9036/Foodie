@@ -63,6 +63,12 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
         }
     }
 
+    suspend fun saveBackOnline(backOnline:Boolean){
+        dataStore.edit{ preferences ->
+            preferences[PreferenceKeys.backOnline]= backOnline
+        }
+    }
+
     //read the stored datastore and emits MealAndDietType data stated below, represent a stream of data that can be collected
     val readMealAndDietType: Flow<MealAndDietType> = dataStore.data
         //if the exception is an IOException, it emits an empty set of preferences. For other exceptions, it just throws them to be handled upstream
@@ -86,6 +92,20 @@ class DataStoreRepository @Inject constructor(@ApplicationContext private val co
                 selectedDietTypeId
             )
         }
+
+    val readBackOnline: Flow<Boolean> = dataStore.data
+        .catch { exception ->
+            if (exception is IOException) {
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map {preferences ->
+            val backOnline = preferences[PreferenceKeys.backOnline] ?: false
+            backOnline
+        }
+
 }
 
 data class MealAndDietType(
