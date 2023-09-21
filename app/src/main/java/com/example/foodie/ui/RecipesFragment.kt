@@ -11,7 +11,10 @@ import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foodie.R
 import com.example.foodie.viewmodels.MainViewModel
 import com.example.foodie.adapters.RecipesAdapter
 import com.example.foodie.databinding.FragmentRecipesBinding
@@ -24,6 +27,12 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class RecipesFragment : Fragment() {
+
+    //by keyword denotes property delegation in Kotlin.
+    //Instead of the args property holding a value itself, it delegates its get (and potentially set) operations to another object or function
+    //allows you to retrieve the arguments passed to this fragment in a type-safe manner.
+    //The generic type RecipesFragmentArgs is a generated class that provides access to the arguments
+    private val args by navArgs<RecipesFragmentArgs>()
 
     //hold an instance of the binding class or be null. It's initialized as null and is private to ensure that outside classes can't access or modify it directly
     //By using the !! operator, it will throw a KotlinNullPointerException if _binding is null.
@@ -60,6 +69,9 @@ class RecipesFragment : Fragment() {
 //        requestApiData()
         readDatabase()
 
+        binding.recipesFab.setOnClickListener {
+            findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheet)
+        }
         //This returns the root view of the binding class.
         //this line would be in the onCreateView method of a fragment, where you inflate the layout and return the root view to be displayed
         return binding.root
@@ -76,7 +88,8 @@ class RecipesFragment : Fragment() {
             //observing changes on readRecipes, which is a LiveData in mainViewModel.
             //Every time this LiveData updates, the lambda passed to observe will execute
             mainViewModel.readRecipes.observeOnce(viewLifecycleOwner) { database ->
-                if (database.isNotEmpty()) {
+                //If the Fragment was not navigated to after closing a BottomSheet, as indicated by the backFromBottomSheet argument passed to the Fragment
+                if (database.isNotEmpty() && !args.backFromBottomSheet){
                     Log.d("api", "requestDatabase")
                     //The data for the first recipe from the database is set on myAdapter
                     myAdapter.setData(database.first().foodRecipe)
