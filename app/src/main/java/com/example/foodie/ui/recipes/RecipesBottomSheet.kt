@@ -1,16 +1,15 @@
-package com.example.foodie.ui
+package com.example.foodie.ui.recipes
 
 import android.os.Bundle
 import android.util.Log
-import android.view.ContextMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
-import com.example.foodie.R
 import com.example.foodie.databinding.RecipesBottomSheetBinding
+import com.example.foodie.ui.recipes.RecipesBottomSheetDirections
 import com.example.foodie.util.Constants.Companion.DEFAULT_DIET_TYPE
 import com.example.foodie.util.Constants.Companion.DEFAULT_MEAL_TYPE
 import com.example.foodie.viewmodels.RecipesViewModel

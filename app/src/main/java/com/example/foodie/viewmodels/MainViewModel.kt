@@ -3,6 +3,7 @@ package com.example.foodie.viewmodels
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
+import android.net.Network
 import android.net.NetworkCapabilities
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -34,16 +35,22 @@ class MainViewModel @Inject constructor(
     //insert a RecipesEntity into the local database,In the coroutine,
     //the function calls the insertRecipes method on the local repository to store the provided entity.
     private fun insertRecipes(recipesEntity: RecipesEntity) =
-        viewModelScope.launch (Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             repository.local.insertRecipes(recipesEntity)
         }
 
     /** Retrofit */
     //hold and observe the results of network requests of type NetworkResult<FoodRecipe>,contain different states such as Success, Error, or Loading
     var recipesResponse: MutableLiveData<NetworkResult<FoodRecipe>> = MutableLiveData()
+    var searchedRecipesResponse: MutableLiveData<NetworkResult<FoodRecipe>> = MutableLiveData()
+
     //initiate a network request for recipes
     fun getRecipes(queries: Map<String, String>) = viewModelScope.launch {
         getRecipesSafeCall(queries)
+    }
+
+    fun searchRecipes(searchQuery: Map<String, String>) = viewModelScope.launch {
+        searchRecipesSafeCall(searchQuery)
     }
 
     //Sets the recipesResponse to NetworkResult.Loading() to indicate that the request is in progress.
@@ -60,7 +67,7 @@ class MainViewModel @Inject constructor(
 
                 //extract a foodRecipe from a recipesResponse (LiveData)
                 val foodRecipe = recipesResponse.value!!.data
-                if (foodRecipe!=null){
+                if (foodRecipe != null) {
                     offlineCacheRecipes(foodRecipe)
                 }
             } catch (e: Exception) {
@@ -71,7 +78,21 @@ class MainViewModel @Inject constructor(
         }
     }
 
-//converts the FoodRecipe to a RecipesEntity
+    private suspend fun searchRecipesSafeCall(searchQuery: Map<String, String>) {
+        searchedRecipesResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val response = repository.remote.searchRecipes(searchQuery)
+                searchedRecipesResponse.value = handleFoodRecipesResponse(response)
+            } catch (e: Exception) {
+                searchedRecipesResponse.value = NetworkResult.Error("Recipes not found.")
+            }
+        } else {
+            searchedRecipesResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+    }
+
+    //converts the FoodRecipe to a RecipesEntity
     private fun offlineCacheRecipes(foodRecipe: FoodRecipe) {
         val recipesEntity = RecipesEntity(foodRecipe)
         insertRecipes(recipesEntity)
@@ -84,9 +105,11 @@ class MainViewModel @Inject constructor(
             response.message().toString().contains("timeout") -> {
                 return NetworkResult.Error("Timeout")
             }
+
             response.code() == 402 -> {
                 return NetworkResult.Error("API Key Limited")
             }
+
             response.body()!!.results.isNullOrEmpty() -> {
                 return NetworkResult.Error("Recipes not found")
             }
@@ -95,13 +118,14 @@ class MainViewModel @Inject constructor(
                 val foodRecipes = response.body()
                 return NetworkResult.Success(foodRecipes!!)
             }
+
             else -> {
                 return NetworkResult.Error(response.message())
             }
         }
     }
 
-//checks the active network's capabilities and transport type to determine the type of internet connection.
+    //checks the active network's capabilities and transport type to determine the type of internet connection.
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<Application>().getSystemService(
             Context.CONNECTIVITY_SERVICE

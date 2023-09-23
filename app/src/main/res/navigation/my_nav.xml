@@ -17,7 +17,7 @@
         tools:layout="@layout/fragment_favorite_recipes" />
     <fragment
         android:id="@+id/recipesFragment"
-        android:name="com.example.foodie.ui.RecipesFragment"
+        android:name="com.example.foodie.ui.recipes.RecipesFragment"
         android:label="Recipes"
         tools:layout="@layout/fragment_recipes" >
         <action
@@ -34,11 +34,16 @@
         tools:layout="@layout/fragment_profile" />
     <dialog
         android:id="@+id/recipesBottomSheet"
-        android:name="com.example.foodie.ui.RecipesBottomSheet"
+        android:name="com.example.foodie.ui.recipes.RecipesBottomSheet"
         android:label="recipes_bottom_sheet"
         tools:layout="@layout/recipes_bottom_sheet" >
         <action
             android:id="@+id/action_recipesBottomSheet_to_recipesFragment"
             app:destination="@id/recipesFragment" />
     </dialog>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.foodie.ui.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
 </navigation>
