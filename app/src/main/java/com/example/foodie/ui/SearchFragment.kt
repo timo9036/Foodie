@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.foodie.R
 import com.example.foodie.adapters.RecipesAdapter
@@ -18,6 +20,9 @@ import com.example.foodie.util.NetworkResult
 import com.example.foodie.viewmodels.MainViewModel
 import com.example.foodie.viewmodels.RecipesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -40,7 +45,8 @@ class SearchFragment : Fragment() {
 
         binding.apply {
             recyclerview.layoutManager =
-                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+                LinearLayoutManager(requireContext())
+//                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
             recyclerview.adapter = myAdapter
 
@@ -52,15 +58,31 @@ class SearchFragment : Fragment() {
 
             }
 
+            var debouncePeriod: Long = 500
+            val coroutineScope = lifecycle.coroutineScope
+            var searchJob: Job? = null
+
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextChange(newText: String): Boolean {
-                    return true
-                }
 
                 override fun onQueryTextSubmit(query: String): Boolean {
                     searchApiData(query)
                     return true
                 }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    searchJob?.cancel()
+                    searchJob = coroutineScope.launch {
+                        delay(debouncePeriod)
+                        if (newText != null) {
+                            searchApiData(newText)
+                        }
+                    }
+                    return false
+                }
+//                override fun onQueryTextChange(newText: String): Boolean {
+//                    return true
+//                }
+
             })
 
             val clearButton: ImageView =
@@ -87,16 +109,14 @@ class SearchFragment : Fragment() {
             when (response) {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
-                    binding.animationView.visibility = View.INVISIBLE
-                    binding.subText.visibility = View.INVISIBLE
+                      binding.recipesImage.visibility = View.INVISIBLE
                     val foodRecipe = response.data
                     foodRecipe?.let { myAdapter.setData(it) }
                 }
 
                 is NetworkResult.Error -> {
                     hideShimmerEffect()
-                    binding.animationView.visibility = View.VISIBLE
-                    binding.subText.visibility = View.VISIBLE
+                    binding.recipesImage.visibility = View.VISIBLE
                     Toast.makeText(
                         requireContext(),
                         response.message.toString(),
@@ -106,8 +126,7 @@ class SearchFragment : Fragment() {
 
                 is NetworkResult.Loading -> {
                     showShimmerEffect()
-                    binding.animationView.visibility = View.INVISIBLE
-                    binding.subText.visibility = View.INVISIBLE
+                    binding.recipesImage.visibility = View.INVISIBLE
                 }
             }
         }

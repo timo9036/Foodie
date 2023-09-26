@@ -98,5 +98,3 @@ class RecipesBottomSheet : BottomSheetDialogFragment() {
         _binding = null
     }
 }
-
-//

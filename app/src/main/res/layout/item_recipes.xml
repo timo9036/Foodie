@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="result"
             type="com.example.foodie.dataclass.Result" />
@@ -11,6 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/recipesRowLayout"
+        onRecipeClickListener="@{result}"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -36,10 +38,10 @@
 
                 <ImageView
                     android:id="@+id/recipe_imageView"
+                    loadImageFromUrl="@{result.image}"
                     android:layout_width="230dp"
                     android:layout_height="0dp"
                     android:scaleType="centerCrop"
-                    loadImageFromUrl="@{result.image}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -72,7 +74,7 @@
                     android:ellipsize="end"
                     android:hint="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
                     android:maxLines="3"
-                    android:text="@{result.summary}"
+                    parseHtml="@{result.summary}"
                     android:textColor="@color/darkGray"
                     app:layout_constraintEnd_toEndOf="@+id/title_textView"
                     app:layout_constraintStart_toStartOf="@+id/title_textView"
@@ -81,14 +83,15 @@
                 <ImageView
                     android:id="@+id/heart_imageView"
                     android:layout_width="0dp"
-                    android:layout_height="40dp"
+                    android:layout_height="35dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="36dp"
+                    android:paddingTop="2dp"
                     app:layout_constraintBottom_toBottomOf="@id/heart_textView"
                     app:layout_constraintEnd_toStartOf="@id/clock_imageView"
                     app:layout_constraintStart_toEndOf="@id/recipe_imageView"
                     app:layout_constraintTop_toBottomOf="@id/description_textView"
-                    app:srcCompat="@drawable/heart"
+                    app:srcCompat="@drawable/love"
                     app:tint="@color/red" />
 
                 <TextView

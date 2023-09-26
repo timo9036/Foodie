@@ -10,6 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/lightGray"
         tools:context=".ui.SearchFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -23,13 +24,13 @@
                 android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
                 android:text="@string/search"
-                android:textSize="34sp"
+                android:textSize="24sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/searchView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/searchView" />
+                app:layout_constraintTop_toTopOf="@id/searchView"
+                app:layout_constraintBottom_toBottomOf="@id/searchView"
+                app:layout_constraintStart_toStartOf="@id/searchView"
+                />
 
             <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchView"
@@ -47,8 +48,8 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/searchBtn"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="15dp"
@@ -63,11 +64,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
+                        android:padding="5dp"
                         android:src="@drawable/loupe" />
 
             </com.google.android.material.card.MaterialCardView>
 
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/recipes_image"
+            android:layout_width="0dp"
+            android:layout_height="350dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/recipe"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_title" />
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmerFrameLayout"
@@ -104,30 +118,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_title" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animationView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_centerInParent="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_rawRes="@raw/search" />
 
-        <TextView
-            android:id="@+id/subText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/animationView"
-            android:layout_centerHorizontal="true"
-            android:text="@string/search_your_recipes_here"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/animationView" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
