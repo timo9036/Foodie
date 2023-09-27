@@ -5,13 +5,17 @@
         android:title="@string/recipes_fragment"
         android:icon="@drawable/home"/>
 
+    <item android:id="@+id/searchFragment"
+        android:title="@string/search_fragment"
+        android:icon="@drawable/loupe"/>
+
     <item android:id="@+id/favoriteRecipesFragment"
         android:title="@string/favorite_recipes_fragment"
-        android:icon="@drawable/favorite"/>
+        android:icon="@drawable/star"/>
 
-    <item android:id="@+id/communityFragment"
-        android:title="@string/community_fragment"
-        android:icon="@drawable/team"/>
+    <item android:id="@+id/gptFragment"
+        android:title="@string/chefgpt_fragment"
+        android:icon="@drawable/ai"/>
 
     <item android:id="@+id/profileFragment"
         android:title="@string/profile_fragment"

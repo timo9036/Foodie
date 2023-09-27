@@ -5,11 +5,7 @@
     android:id="@+id/my_nav"
     app:startDestination="@id/recipesFragment">
 
-    <fragment
-        android:id="@+id/communityFragment"
-        android:name="com.example.foodie.ui.CommunityFragment"
-        android:label="Community"
-        tools:layout="@layout/fragment_community" />
+
     <fragment
         android:id="@+id/favoriteRecipesFragment"
         android:name="com.example.foodie.ui.FavoriteRecipesFragment"
@@ -17,12 +13,54 @@
         tools:layout="@layout/fragment_favorite_recipes" />
     <fragment
         android:id="@+id/recipesFragment"
-        android:name="com.example.foodie.ui.RecipesFragment"
+        android:name="com.example.foodie.ui.recipes.RecipesFragment"
         android:label="Recipes"
-        tools:layout="@layout/fragment_recipes" />
+        tools:layout="@layout/fragment_recipes" >
+        <action
+            android:id="@+id/action_recipesFragment_to_recipesBottomSheet"
+            app:destination="@id/recipesBottomSheet" />
+        <argument
+            android:name="backFromBottomSheet"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_recipesFragment_to_detailsActivity"
+            app:destination="@id/detailsActivity" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.foodie.ui.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/fragment_profile" />
+    <dialog
+        android:id="@+id/recipesBottomSheet"
+        android:name="com.example.foodie.ui.recipes.RecipesBottomSheet"
+        android:label="recipes_bottom_sheet"
+        tools:layout="@layout/recipes_bottom_sheet" >
+        <action
+            android:id="@+id/action_recipesBottomSheet_to_recipesFragment"
+            app:destination="@id/recipesFragment" />
+    </dialog>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.foodie.ui.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_detailsActivity"
+            app:destination="@id/detailsActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/gptFragment"
+        android:name="com.example.foodie.ui.GptFragment"
+        android:label="ChefGPT"
+        tools:layout="@layout/fragment_gpt" />
+    <activity
+        android:id="@+id/detailsActivity"
+        android:name="com.example.foodie.ui.DetailsActivity"
+        android:label="Details"
+        tools:layout="@layout/activity_details" >
+        <argument
+            android:name="result"
+            app:argType="com.example.foodie.dataclass.Result" />
+    </activity>
 </navigation>
