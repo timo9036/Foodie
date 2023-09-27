@@ -17,6 +17,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,8 +45,9 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @AndroidEntryPoint
-class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
+class RecipesFragment : Fragment() {
 
+    private var dataRequested = false
     //by keyword denotes property delegation in Kotlin.
     //Instead of the args property holding a value itself, it delegates its get (and potentially set) operations to another object or function
     //allows you to retrieve the arguments passed to this fragment in a type-safe manner.
@@ -67,14 +69,12 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private lateinit var networkListener: NetworkListener
 
-    private val searchQueryFlow: MutableSharedFlow<String> = MutableSharedFlow()
-    private var searchJob: Job? = null
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
-
-    init {
-        setupDebounce()
+    override fun onResume() {
+        super.onResume()
+        if (mainViewModel.recyclerViewState != null) {
+            binding.recyclerview.layoutManager?.onRestoreInstanceState(mainViewModel.recyclerViewState)
+        }
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,23 +95,6 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
         //used in the XML layout file to bind UI components to data and functions provided by mainViewModel
         binding.mainViewModel = mainViewModel
 
-        val menuHost: MenuHost = requireActivity()
-        menuHost.addMenuProvider(object : MenuProvider {
-            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.recipes_menu, menu)
-
-                val search = menu.findItem(R.id.menu_search)
-                val searchView = search.actionView as? SearchView
-                searchView?.isSubmitButtonEnabled = true
-                searchView?.setOnQueryTextListener(this@RecipesFragment)
-            }
-
-            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                return true
-            }
-        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-
-        //        requestApiData()
         setupRecyclerView()
 
         recipesViewModel.readBackOnline.observe(viewLifecycleOwner) {
@@ -119,14 +102,16 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
         }
 
         lifecycleScope.launch {
-            networkListener = NetworkListener()
-            networkListener.checkNetworkAvailability(requireContext())
-                .collect { status ->
-                    Log.d("NetworkListener", status.toString())
-                    recipesViewModel.networkStatus = status
-                    recipesViewModel.showNetworkStatus()
-                    readDatabase()
-                }
+            repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+                networkListener = NetworkListener()
+                networkListener.checkNetworkAvailability(requireContext())
+                    .collect { status ->
+                        Log.d("NetworkListener", status.toString())
+                        recipesViewModel.networkStatus = status
+                        recipesViewModel.showNetworkStatus()
+                        readDatabase()
+                    }
+            }
         }
 
         binding.recipesFab.setOnClickListener {
@@ -143,70 +128,25 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
         showShimmerEffect()
     }
 
-    private fun setupDebounce() {
-        searchJob?.cancel()
-        searchJob = coroutineScope.launch {
-            searchQueryFlow
-                .debounce(300) // 300ms debounce time, adjust as necessary
-                .filter { it.isNotBlank() }
-                .distinctUntilChanged() // To prevent calling API with the same search text
-                .collect { query ->
-                    searchApiData(query)
-                }
-        }
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        if (query != null) {
-            searchApiData(query)
-        }
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText != null) {
-            coroutineScope.launch {
-                searchQueryFlow.emit(newText)
-            }
-        }
-        return true
-    }
-
-
-//    private var debouncePeriod: Long = 500
-//    private val coroutineScope = lifecycle.coroutineScope
-//    private var searchJob: Job? = null
-//
-//    override fun onQueryTextSubmit(query: String?): Boolean {
-//        if (query != null) {
-//            searchApiData(query)
-//        }
-//        return false
-//    }
-//    override fun onQueryTextChange(newText: String?): Boolean {
-//        searchJob?.cancel()
-//        searchJob = coroutineScope.launch {
-//                delay(debouncePeriod)
-//            if (newText != null) {
-//                searchApiData(newText)
-//            }
-//        }
-//        return false
-//    }
-
     private fun readDatabase() {
         lifecycleScope.launch {
             //observing changes on readRecipes, which is a LiveData in mainViewModel.
             //Every time this LiveData updates, the lambda passed to observe will execute
             mainViewModel.readRecipes.observeOnce(viewLifecycleOwner) { database ->
                 //If the Fragment was not navigated to after closing a BottomSheet, as indicated by the backFromBottomSheet argument passed to the Fragment
-                if (database.isNotEmpty() && !args.backFromBottomSheet) {
-                    Log.d("api", "requestDatabase")
+                if (database.isNotEmpty() && !args.backFromBottomSheet
+                    || database.isNotEmpty() && dataRequested
+                ) {
+                    Log.d("RecipesFragment", "readDatabase called!")
                     //The data for the first recipe from the database is set on myAdapter
                     myAdapter.setData(database.first().foodRecipe)
                     hideShimmerEffect()
                 } else {
-                    requestApiData()
+                    Log.d("RecipesFragment", "requestApiData called!")
+                    if (!dataRequested) {
+                        requestApiData()
+                        dataRequested = true
+                    }
                 }
             }
         }
@@ -220,34 +160,7 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
                     response.data?.let { myAdapter.setData(it) }
-                }
-
-                is NetworkResult.Error -> {
-                    hideShimmerEffect()
-                    loadDataFromCache()
-                    Toast.makeText(
-                        requireContext(),
-                        response.message.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-                is NetworkResult.Loading -> {
-                    showShimmerEffect()
-                }
-            }
-        }
-    }
-
-    private fun searchApiData(searchQuery: String) {
-        showShimmerEffect()
-        mainViewModel.searchRecipes(recipesViewModel.applySearchQuery(searchQuery))
-        mainViewModel.searchedRecipesResponse.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is NetworkResult.Success -> {
-                    hideShimmerEffect()
-                    val foodRecipe = response.data
-                    foodRecipe?.let { myAdapter.setData(it) }
+                    recipesViewModel.saveMealAndDietType()
                 }
 
                 is NetworkResult.Error -> {
@@ -293,9 +206,9 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
     //By doing this, you ensure that you don't accidentally reference views after the fragment's view has been destroyed
     override fun onDestroy() {
         super.onDestroy()
+        mainViewModel.recyclerViewState =
+            binding.recyclerview.layoutManager?.onSaveInstanceState()
         _binding = null
-        searchJob?.cancel()
-        coroutineScope.cancel()
     }
 
 }

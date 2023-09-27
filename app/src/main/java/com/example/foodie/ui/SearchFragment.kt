@@ -58,31 +58,15 @@ class SearchFragment : Fragment() {
 
             }
 
-            var debouncePeriod: Long = 500
-            val coroutineScope = lifecycle.coroutineScope
-            var searchJob: Job? = null
-
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String): Boolean {
+                    return true
+                }
 
                 override fun onQueryTextSubmit(query: String): Boolean {
                     searchApiData(query)
                     return true
                 }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    searchJob?.cancel()
-                    searchJob = coroutineScope.launch {
-                        delay(debouncePeriod)
-                        if (newText != null) {
-                            searchApiData(newText)
-                        }
-                    }
-                    return false
-                }
-//                override fun onQueryTextChange(newText: String): Boolean {
-//                    return true
-//                }
-
             })
 
             val clearButton: ImageView =
@@ -116,6 +100,7 @@ class SearchFragment : Fragment() {
 
                 is NetworkResult.Error -> {
                     hideShimmerEffect()
+                    loadDataFromCache()
                     binding.recipesImage.visibility = View.VISIBLE
                     Toast.makeText(
                         requireContext(),
@@ -128,6 +113,14 @@ class SearchFragment : Fragment() {
                     showShimmerEffect()
                     binding.recipesImage.visibility = View.INVISIBLE
                 }
+            }
+        }
+    }
+
+    private fun loadDataFromCache() {
+        mainViewModel.readRecipes.observe(viewLifecycleOwner) { database ->
+            if (database.isNotEmpty()) {
+                myAdapter.setData(database.first().foodRecipe)
             }
         }
     }
