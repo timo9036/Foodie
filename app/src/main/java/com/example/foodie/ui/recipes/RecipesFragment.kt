@@ -30,9 +30,16 @@ import com.example.foodie.util.NetworkResult
 import com.example.foodie.util.observeOnce
 import com.example.foodie.viewmodels.RecipesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
@@ -59,6 +66,14 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var recipesViewModel: RecipesViewModel
 
     private lateinit var networkListener: NetworkListener
+
+    private val searchQueryFlow: MutableSharedFlow<String> = MutableSharedFlow()
+    private var searchJob: Job? = null
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+    init {
+        setupDebounce()
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -128,41 +143,56 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
         showShimmerEffect()
     }
 
-//    override fun onQueryTextSubmit(query: String?): Boolean {
-//        if (query != null) {
-//            searchApiData(query)
-//        }
-//        return true
-//    }
-//
-//    override fun onQueryTextChange(newText: String?): Boolean {
-//        if (newText != null) {
-//            searchApiData(newText)
-//        }
-//        return true
-//    }
-
-
-    private var debouncePeriod: Long = 500
-    private val coroutineScope = lifecycle.coroutineScope
-    private var searchJob: Job? = null
+    private fun setupDebounce() {
+        searchJob?.cancel()
+        searchJob = coroutineScope.launch {
+            searchQueryFlow
+                .debounce(300) // 300ms debounce time, adjust as necessary
+                .filter { it.isNotBlank() }
+                .distinctUntilChanged() // To prevent calling API with the same search text
+                .collect { query ->
+                    searchApiData(query)
+                }
+        }
+    }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         if (query != null) {
             searchApiData(query)
         }
-        return false
+        return true
     }
+
     override fun onQueryTextChange(newText: String?): Boolean {
-        searchJob?.cancel()
-        searchJob = coroutineScope.launch {
-                delay(debouncePeriod)
-            if (newText != null) {
-                searchApiData(newText)
+        if (newText != null) {
+            coroutineScope.launch {
+                searchQueryFlow.emit(newText)
             }
         }
-        return false
+        return true
     }
+
+
+//    private var debouncePeriod: Long = 500
+//    private val coroutineScope = lifecycle.coroutineScope
+//    private var searchJob: Job? = null
+//
+//    override fun onQueryTextSubmit(query: String?): Boolean {
+//        if (query != null) {
+//            searchApiData(query)
+//        }
+//        return false
+//    }
+//    override fun onQueryTextChange(newText: String?): Boolean {
+//        searchJob?.cancel()
+//        searchJob = coroutineScope.launch {
+//                delay(debouncePeriod)
+//            if (newText != null) {
+//                searchApiData(newText)
+//            }
+//        }
+//        return false
+//    }
 
     private fun readDatabase() {
         lifecycleScope.launch {
@@ -264,6 +294,8 @@ class RecipesFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        searchJob?.cancel()
+        coroutineScope.cancel()
     }
 
 }
