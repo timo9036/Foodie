@@ -3,7 +3,6 @@ package com.example.foodie.viewmodels
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Parcelable
 import androidx.lifecycle.AndroidViewModel
@@ -12,7 +11,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.foodie.data.Repository
-import com.example.foodie.data.database.RecipesEntity
+import com.example.foodie.data.database.entities.FavoritesEntity
+import com.example.foodie.data.database.entities.RecipesEntity
 import com.example.foodie.dataclass.FoodRecipe
 import com.example.foodie.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,12 +34,28 @@ class MainViewModel @Inject constructor(
     //retrieves a Flow object from Room and converts it to LiveData using the .asLiveData() extension function.
     //This conversion makes the data observable by UI components, which will update when the underlying data changes
     val readRecipes: LiveData<List<RecipesEntity>> = repository.local.readRecipes().asLiveData()
+    val readFavoriteRecipes: LiveData<List<FavoritesEntity>> = repository.local.readFavoriteRecipes().asLiveData()
 
     //insert a RecipesEntity into the local database,In the coroutine,
     //the function calls the insertRecipes method on the local repository to store the provided entity.
     private fun insertRecipes(recipesEntity: RecipesEntity) =
         viewModelScope.launch(Dispatchers.IO) {
             repository.local.insertRecipes(recipesEntity)
+        }
+
+    fun insertFavoriteRecipe(favoritesEntity: FavoritesEntity)=
+        viewModelScope.launch(Dispatchers.IO){
+            repository.local.insertFavoriteRecipes(favoritesEntity)
+        }
+
+    fun deleteFavoriteRecipe(favoritesEntity: FavoritesEntity)=
+        viewModelScope.launch(Dispatchers.IO){
+            repository.local.deleteFavoriteRecipe(favoritesEntity)
+        }
+
+    fun deleteAllFavoriteRecipes() =
+        viewModelScope.launch(Dispatchers.IO){
+            repository.local.deleteAllFavoriteRecipes()
         }
 
     /** Retrofit */

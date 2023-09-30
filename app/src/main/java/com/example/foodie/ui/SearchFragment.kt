@@ -20,7 +20,10 @@ import com.example.foodie.util.NetworkResult
 import com.example.foodie.viewmodels.MainViewModel
 import com.example.foodie.viewmodels.RecipesViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -32,6 +35,9 @@ class SearchFragment : Fragment() {
     private lateinit var mainViewModel: MainViewModel
     private lateinit var recipesViewModel: RecipesViewModel
     private val myAdapter by lazy { RecipesAdapter() }
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private var searchJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,7 +65,15 @@ class SearchFragment : Fragment() {
             }
 
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
                 override fun onQueryTextChange(newText: String): Boolean {
+                    searchJob?.cancel()
+                    searchJob = coroutineScope.launch {
+                        delay(600L)
+                        if (newText.isNotBlank()) {
+                            searchApiData(newText)
+                        }
+                    }
                     return true
                 }
 
@@ -93,7 +107,7 @@ class SearchFragment : Fragment() {
             when (response) {
                 is NetworkResult.Success -> {
                     hideShimmerEffect()
-                      binding.recipesImage.visibility = View.INVISIBLE
+                    binding.recipesImage.visibility = View.INVISIBLE
                     val foodRecipe = response.data
                     foodRecipe?.let { myAdapter.setData(it) }
                 }
@@ -140,5 +154,6 @@ class SearchFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        coroutineScope.cancel()
     }
 }
