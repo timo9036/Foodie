@@ -112,4 +112,7 @@ dependencies {
     // lottie
     def lottieVersion = "3.7.0"
     implementation "com.airbnb.android:lottie:$lottieVersion"
+
+    // Rounded ImageView
+    implementation 'com.makeramen:roundedimageview:2.3.0'
 }
