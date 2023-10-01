@@ -48,6 +48,7 @@ import kotlinx.coroutines.launch
 class RecipesFragment : Fragment() {
 
     private var dataRequested = false
+
     //by keyword denotes property delegation in Kotlin.
     //Instead of the args property holding a value itself, it delegates its get (and potentially set) operations to another object or function
     //allows you to retrieve the arguments passed to this fragment in a type-safe manner.
