@@ -27,11 +27,10 @@ class FavoriteRecipesAdapter(
     private var multiSelection = false
 
     private lateinit var myActionMode: ActionMode
-    private lateinit var rootView:View
+    private lateinit var rootView: View
 
     private var selectedRecipes = arrayListOf<FavoritesEntity>()
     private var favoriteRecipes = emptyList<FavoritesEntity>()
-
     private var myViewHolders = arrayListOf<MyViewHolder>()
 
     class MyViewHolder(val binding: ItemFavoriteRecipesBinding) :
@@ -59,13 +58,13 @@ class FavoriteRecipesAdapter(
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-
         myViewHolders.add(holder)
-
         rootView = holder.itemView.rootView
 
         val currentRecipe = favoriteRecipes[position]
         holder.bind(currentRecipe)
+
+        saveItemStateOnScroll(currentRecipe, holder)
 
         /*Single Click Listener*/
         holder.binding.favoriteRecipesRowLayout.setOnClickListener {
@@ -89,10 +88,18 @@ class FavoriteRecipesAdapter(
                 applySelection(holder, currentRecipe)
                 true
             } else {
-                multiSelection = false
-                false
+                applySelection(holder, currentRecipe)
+                true
             }
 
+        }
+    }
+
+    private fun saveItemStateOnScroll(currentRecipe: FavoritesEntity, holder: MyViewHolder) {
+        if (selectedRecipes.contains(currentRecipe)) {
+            changeRecipeStyle(holder, R.color.cardBackgroundColor, R.color.colorPrimary)
+        } else {
+            changeRecipeStyle(holder, R.color.cardBackgroundColor, R.color.strokeColor)
         }
     }
 
@@ -121,12 +128,13 @@ class FavoriteRecipesAdapter(
             0 -> {
                 myActionMode.finish()
             }
-            1->{
+
+            1 -> {
                 myActionMode.title = "${selectedRecipes.size} item selected"
             }
+
             else ->
                 myActionMode.title = "${selectedRecipes.size} items selected"
-
         }
     }
 
@@ -142,14 +150,14 @@ class FavoriteRecipesAdapter(
     }
 
     override fun onActionItemClicked(actionMode: ActionMode?, menu: MenuItem?): Boolean {
-        if(menu?.itemId == R.id.delete_favorite_recipe_menu){
-            selectedRecipes.forEach{
+        if (menu?.itemId == R.id.delete_favorite_recipe_menu) {
+            selectedRecipes.forEach {
                 mainViewModel.deleteFavoriteRecipe(it)
             }
 
-            val message = if (selectedRecipes.size ==1){
+            val message = if (selectedRecipes.size == 1) {
                 "${selectedRecipes.size} Recipe removed"
-            }else{
+            } else {
                 "${selectedRecipes.size} Recipes removed"
             }
 
@@ -185,17 +193,17 @@ class FavoriteRecipesAdapter(
         diffUtilResult.dispatchUpdatesTo(this)
     }
 
-    private fun showSnackBar(message:String){
+    private fun showSnackBar(message: String) {
         Snackbar.make(
             rootView,
             message,
             Snackbar.LENGTH_SHORT
-        ).setAction("Okay"){}
+        ).setAction("Okay") {}
             .show()
     }
 
-    fun clearContextualActionMode(){
-        if(this::myActionMode.isInitialized){
+    fun clearContextualActionMode() {
+        if (this::myActionMode.isInitialized) {
             myActionMode.finish()
         }
     }

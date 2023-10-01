@@ -114,4 +114,3 @@ data class MealAndDietType(
     val selectedDietType: String,
     val selectedDietTypeId: Int
 )
-//
