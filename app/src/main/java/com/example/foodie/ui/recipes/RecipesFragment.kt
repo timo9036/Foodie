@@ -1,6 +1,8 @@
 package com.example.foodie.ui.recipes
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -21,7 +23,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.example.foodie.R
+import com.example.foodie.adapters.RandomRecipesAdapter
 import com.example.foodie.viewmodels.MainViewModel
 import com.example.foodie.adapters.RecipesAdapter
 import com.example.foodie.databinding.FragmentRecipesBinding
@@ -65,6 +71,11 @@ class RecipesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val myAdapter by lazy { RecipesAdapter() }
+
+    private val randomAdapter by lazy { RandomRecipesAdapter(requireActivity()) }
+    private var sliderHandler: Handler = Handler(Looper.getMainLooper())
+    var isAtLimit = false
+
     private lateinit var mainViewModel: MainViewModel
     private lateinit var recipesViewModel: RecipesViewModel
 
@@ -118,14 +129,43 @@ class RecipesFragment : Fragment() {
         binding.recipesFab.setOnClickListener {
             findNavController().navigate(R.id.action_recipesFragment_to_recipesBottomSheet)
         }
+
+        binding.randomRecipes.adapter = randomAdapter
+        binding.randomRecipes.clipToPadding = false
+        binding.randomRecipes.clipChildren = false
+        binding.randomRecipes.offscreenPageLimit = 3
+        binding.randomRecipes.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
+
+        binding.randomRecipes.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                sliderHandler.removeCallbacks(sliderRunnable)
+                sliderHandler.postDelayed(sliderRunnable, 2000)
+            }
+        })
+
         //This returns the root view of the binding class.
         //this line would be in the onCreateView method of a fragment, where you inflate the layout and return the root view to be displayed
         return binding.root
     }
 
+    private var sliderRunnable: Runnable = kotlinx.coroutines.Runnable {
+        if (binding.randomRecipes.currentItem == 4) {
+            isAtLimit = true
+        } else if (binding.randomRecipes.currentItem == 0) {
+            isAtLimit = false
+        }
+
+        if (isAtLimit) {
+            binding.randomRecipes.currentItem = binding.randomRecipes.currentItem - 1
+        } else {
+            binding.randomRecipes.currentItem = binding.randomRecipes.currentItem + 1
+        }
+    }
+
     private fun setupRecyclerView() {
         binding.recyclerview.adapter = myAdapter
-        binding.recyclerview.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerview.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         showShimmerEffect()
     }
 
@@ -149,6 +189,7 @@ class RecipesFragment : Fragment() {
                         dataRequested = true
                     }
                 }
+                requestRandomData()
             }
         }
     }
@@ -180,6 +221,25 @@ class RecipesFragment : Fragment() {
             }
         }
     }
+
+    private fun requestRandomData() {
+        mainViewModel.getRandomRecipes(recipesViewModel.applyQueries())
+        mainViewModel.randomRecipeResponse.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is NetworkResult.Success -> {
+                    response.data.let {
+                        randomAdapter.setData(it!!)
+                    }
+                }
+                is NetworkResult.Error -> {
+                    Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
+                }
+                is NetworkResult.Loading -> {
+                }
+            }
+        }
+    }
+
 
     private fun loadDataFromCache() {
         //observes the readRecipes LiveData from mainViewModel

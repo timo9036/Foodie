@@ -26,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.appcompat.app.AppCompatActivity
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -43,6 +44,9 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()
+
         // Inflate the layout for this fragment
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
@@ -51,8 +55,8 @@ class SearchFragment : Fragment() {
 
         binding.apply {
             recyclerview.layoutManager =
-                LinearLayoutManager(requireContext())
-//                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+//                LinearLayoutManager(requireContext())
+                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
             recyclerview.adapter = myAdapter
 
@@ -153,6 +157,7 @@ class SearchFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
+        (activity as? AppCompatActivity)?.supportActionBar?.show()
         _binding = null
         coroutineScope.cancel()
     }

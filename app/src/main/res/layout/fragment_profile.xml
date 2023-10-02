@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/backgroundColor"
         android:orientation="vertical"
         tools:context=".ui.AboutBottomSheetFragment">
 
@@ -87,15 +87,15 @@
                 android:padding="20dp">
 
                 <com.makeramen.roundedimageview.RoundedImageView
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:src="@drawable/kitty"
-                    app:riv_corner_radius="40dp" />
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/kitten"
+                    app:riv_corner_radius="80dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:text="Developed and designed by"
                      />
 
@@ -175,7 +175,7 @@
                         android:layout_height="32dp"
                         android:background="@drawable/background_about_images"
                         android:padding="8dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginEnd="15dp"
                         android:scaleType="fitCenter"
                         android:src="@drawable/daynight"
                         android:clickable="true"
@@ -185,7 +185,7 @@
                         android:id="@+id/foodJoke"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="15dp"
                         android:background="@drawable/background_about_images"
                         android:padding="5dp"
                         android:scaleType="fitCenter"

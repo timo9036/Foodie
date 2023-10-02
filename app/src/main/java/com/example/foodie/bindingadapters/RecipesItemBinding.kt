@@ -1,6 +1,7 @@
 package com.example.foodie.bindingadapters
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -24,9 +25,27 @@ class RecipesItemBinding {
         @BindingAdapter("loadImageFromUrl")
         @JvmStatic
         fun loadImageFromUrl(imageView: ImageView, imageUrl: String) {
+            Log.i("Tim", "imageUrl: $imageUrl")
             imageView.load(imageUrl) {
-                crossfade(600)
+//                crossfade(300)
                 error(R.drawable.error)
+            }
+        }
+
+        @BindingAdapter("applyVeganColorMain")
+        @JvmStatic
+        fun applyVeganColorMain(view: TextView, vegan: Boolean) {
+            if (vegan) {
+                // Set text color to green
+                view.setTextColor(ContextCompat.getColor(view.context, R.color.green))
+
+                // Set drawable color to green
+                val drawable = ContextCompat.getDrawable(view.context, R.drawable.ic_leaf)?.mutate()
+                drawable?.setColorFilter(
+                    ContextCompat.getColor(view.context, R.color.green),
+                    PorterDuff.Mode.SRC_IN
+                )
+                view.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null)
             }
         }
 

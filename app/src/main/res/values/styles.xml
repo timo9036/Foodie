@@ -6,9 +6,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionModeBackground">@color/contextualActionBarColor</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
-        <item name="actionBarStyle">@style/CustomActionBarStyle</item>
+        <item name="android:statusBarColor">@color/white</item>
         <item name="bottomNavigationStyle">@style/CustomBottomNavigationViewStyle</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+        <item name="actionBarStyle">@style/CustomActionBarStyle</item>
+
     </style>
 
     <style name="CustomBottomNavigationViewStyle" parent="Widget.MaterialComponents.BottomNavigationView">
@@ -43,13 +46,15 @@
     </style>
 
 
-    <style name="SplashScreenStyle" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
     <style name="CustomActionBarStyle" parent="Widget.MaterialComponents.ActionBar.Primary">
         <item name="background">@color/actionBarBackgroundColor</item>
+
+        <item name="titleTextStyle">@style/CustomTitleTextStyle</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="CustomTitleTextStyle" parent="@style/TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/darker</item>
     </style>
 
 

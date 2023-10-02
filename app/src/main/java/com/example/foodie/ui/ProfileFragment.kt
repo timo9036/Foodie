@@ -26,25 +26,29 @@ class ProfileFragment : Fragment() {
         binding.repoLink.setOnClickListener {
             val url: Uri = Uri.parse("https://github.com/timo9036/Foodie")
             val intent = Intent(Intent.ACTION_VIEW, url)
-            if (intent.resolveActivity(requireContext().packageManager) != null) {
+            intent.addCategory(Intent.CATEGORY_BROWSABLE)
+            intent.addCategory(Intent.CATEGORY_DEFAULT)
+//            if (intent.resolveActivity(requireContext().packageManager) != null) {
                 startActivity(intent)
             }
-        }
+
 
         binding.linkedInLink.setOnClickListener {
             val recipeUrl: Uri = Uri.parse("https://www.linkedin.com/in/timothy-l-338875249/")
             val intent = Intent(Intent.ACTION_VIEW, recipeUrl)
-            if (intent.resolveActivity(requireContext().packageManager) != null) {
+            intent.addCategory(Intent.CATEGORY_BROWSABLE)
+            intent.addCategory(Intent.CATEGORY_DEFAULT)
+//            if (intent.resolveActivity(requireContext().packageManager) != null) {
                 startActivity(intent)
-            }
+//            }
         }
 
         binding.githubLink.setOnClickListener {
             val recipeUrl: Uri = Uri.parse("https://github.com/timo9036")
             val intent = Intent(Intent.ACTION_VIEW, recipeUrl)
-            if (intent.resolveActivity(requireContext().packageManager) != null) {
+//            if (intent.resolveActivity(requireContext().packageManager) != null) {
                 startActivity(intent)
-            }
+//            }
         }
 
         binding.mailLink.setOnClickListener {

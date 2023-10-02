@@ -2,6 +2,9 @@ package com.example.foodie.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodie.databinding.ItemRecipesBinding
@@ -13,10 +16,27 @@ class RecipesAdapter : RecyclerView.Adapter<RecipesAdapter.MyViewHolder>() {
 
     private var recipes = emptyList<Result>()
 
-    class MyViewHolder(private val binding: ItemRecipesBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class MyViewHolder(private val binding: ItemRecipesBinding):
+        RecyclerView.ViewHolder(binding.root), LifecycleOwner {
+
+        private val lifecycleRegistry = LifecycleRegistry(this)
+        init {
+            lifecycleRegistry.currentState = Lifecycle.State.INITIALIZED
+        }
+
+        fun markAttach() {
+            lifecycleRegistry.currentState = Lifecycle.State.STARTED
+        }
+
+        fun markDetach() {
+            lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
+        }
+
+        override val lifecycle: Lifecycle
+            get() = lifecycleRegistry
 
         fun bind(result: Result) {
+            binding.lifecycleOwner = this
             binding.result = result
             binding.executePendingBindings()
         }
@@ -47,7 +67,7 @@ class RecipesAdapter : RecyclerView.Adapter<RecipesAdapter.MyViewHolder>() {
         val recipesDiffUtil = RecipesDiffUtil(recipes, newData.results)
         val diffUtilResult = DiffUtil.calculateDiff(recipesDiffUtil)
         recipes = newData.results
-        diffUtilResult.dispatchUpdatesTo(this)
-//        notifyDataSetChanged()
+//        diffUtilResult.dispatchUpdatesTo(this)
+        notifyDataSetChanged()
     }
 }
