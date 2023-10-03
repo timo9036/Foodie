@@ -63,7 +63,7 @@ class DetailsActivity : AppCompatActivity() {
             this
         )
 
-        binding.viewPager2.isUserInputEnabled = false
+//        binding.viewPager2.isUserInputEnabled = false
         binding.viewPager2.apply {
             adapter = pagerAdapter
         }
