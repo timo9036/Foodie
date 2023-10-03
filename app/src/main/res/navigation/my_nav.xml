@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/recipesFragment"
         android:name="com.example.foodie.ui.recipes.RecipesFragment"
-        android:label="Recipes"
+        android:label="Foodie"
         tools:layout="@layout/fragment_recipes" >
         <action
             android:id="@+id/action_recipesFragment_to_recipesBottomSheet"
@@ -33,7 +33,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.foodie.ui.ProfileFragment"
-        android:label="Profile"
+        android:label="About"
         tools:layout="@layout/fragment_profile" />
     <dialog
         android:id="@+id/recipesBottomSheet"

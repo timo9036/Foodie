@@ -40,13 +40,14 @@ class SearchFragment : Fragment() {
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity as? AppCompatActivity)?.supportActionBar?.hide()    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        (activity as? AppCompatActivity)?.supportActionBar?.hide()
-
         // Inflate the layout for this fragment
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
 
