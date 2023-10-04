@@ -26,7 +26,7 @@ class RecipesBottomSheet : BottomSheetDialogFragment() {
     private val binding get() = _binding!!
 
     private var mealTypeChip = DEFAULT_MEAL_TYPE
-    private var mealTYpeChipId = 0
+    private var mealTypeChipId = 0
     private var dietTypeChip = DEFAULT_DIET_TYPE
     private var dietTypeChipId = 0
 
@@ -56,7 +56,7 @@ class RecipesBottomSheet : BottomSheetDialogFragment() {
             val chip = group.findViewById<Chip>(selectedChipId.first())
             val selectedMealType = chip.text.toString().lowercase(Locale.ROOT)
             mealTypeChip = selectedMealType
-            mealTYpeChipId = selectedChipId.first()
+            mealTypeChipId = selectedChipId.first()
         }
         binding.dietTypeChipGroup.setOnCheckedStateChangeListener { group, selectedChipId ->
             val chip = group.findViewById<Chip>(selectedChipId.first())
@@ -66,9 +66,9 @@ class RecipesBottomSheet : BottomSheetDialogFragment() {
         }
 
         binding.applyBtn.setOnClickListener {
-            recipesViewModel.saveMealAndDietType(
+            recipesViewModel.saveMealAndDietTypeTemp(
                 mealTypeChip,
-                mealTYpeChipId,
+                mealTypeChipId,
                 dietTypeChip,
                 dietTypeChipId
             )

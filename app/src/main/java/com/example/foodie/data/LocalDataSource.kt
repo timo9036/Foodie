@@ -1,7 +1,8 @@
 package com.example.foodie.data
 
+import com.example.foodie.data.database.entities.FavoritesEntity
 import com.example.foodie.data.database.RecipesDao
-import com.example.foodie.data.database.RecipesEntity
+import com.example.foodie.data.database.entities.RecipesEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -18,6 +19,22 @@ class LocalDataSource @Inject constructor(
     //recipesEntity,data to be inserted into the database.
     suspend fun insertRecipes(recipesEntity: RecipesEntity){
         recipesDao.insertRecipes(recipesEntity)
+    }
+
+    fun readFavoriteRecipes():Flow<List<FavoritesEntity>>{
+        return recipesDao.readFavoritesRecipes()
+    }
+
+    suspend fun insertFavoriteRecipes(favoritesEntity: FavoritesEntity){
+        recipesDao.insertFavoriteRecipe(favoritesEntity)
+    }
+
+    suspend fun deleteFavoriteRecipe(favoritesEntity: FavoritesEntity){
+        recipesDao.deleteFavoriteRecipe(favoritesEntity)
+    }
+
+    suspend fun deleteAllFavoriteRecipes() {
+        recipesDao.deleteAllFavoriteRecipes()
     }
 
 }

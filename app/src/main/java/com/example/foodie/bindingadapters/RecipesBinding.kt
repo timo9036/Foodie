@@ -1,15 +1,13 @@
 package com.example.foodie.bindingadapters
 
-import android.net.Network
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
-import com.example.foodie.data.database.RecipesEntity
+import com.example.foodie.data.database.entities.RecipesEntity
 import com.example.foodie.dataclass.FoodRecipe
 import com.example.foodie.util.NetworkResult
-import retrofit2.Response
 
 class RecipesBinding {
 

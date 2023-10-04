@@ -17,9 +17,8 @@
     <color name="green">#00C980</color>
     <color name="blue">#0000ff</color>
 
-    <!-- LIGHT THEME -->
 
-    <color name="backgroundColor">@color/lightGray</color>
+    <color name="backgroundColor">@color/white</color>
     <color name="placeholderColor">@color/mediumGray</color>
     <color name="itemColor">@color/darker</color>
 
@@ -36,13 +35,13 @@
     <color name="titleColor">@color/darker</color>
     <color name="descriptionColor">@color/darkGray</color>
 
-    <color name="statusBarColor">@color/colorPrimaryDark</color>
+    <color name="statusBarColor">@color/white</color>
     <color name="contextualStatusBarColor">@color/darker</color>
     <color name="contextualActionBarColor">@color/dark</color>
     <color name="actionBarBackgroundColor">@color/colorPrimary</color>
 
     // Custom BottomNavigationView Style
-    <color name="bottomNavBackground">@color/white</color>
+    <color name="bottomNavBackground">@color/lightGray</color>
     <color name="bottomNavItemColor">@color/darkGray</color>
     <color name="bottomNavCheckedItemColor">@color/colorPrimary</color>
 
