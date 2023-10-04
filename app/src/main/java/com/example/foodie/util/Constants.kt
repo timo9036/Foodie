@@ -6,9 +6,11 @@ class Constants {
 
         const val BASE_URL = "https://api.spoonacular.com"
         const val BASE_IMAGE_URL = "https://spoonacular.com/cdn/ingredients_100x100/"
-        const val API_KEY = "439cf738b222477c842bf42eca689ee6"
-//        439cf738b222477c842bf42eca689ee6 for usual
-//        34d8a406c589452f80d325d51a307fe6 for testing only
+        const val API_KEY = "b87c60f790824175a6d369137c97f6aa"
+//        439cf738b222477c842bf42eca689ee6
+//        34d8a406c589452f80d325d51a307fe6
+
+//for testing only        b87c60f790824175a6d369137c97f6aa
 
         const val RECIPE_RESULT_KEY = "recipeBundle"
 
@@ -20,6 +22,11 @@ class Constants {
         const val QUERY_DIET = "diet"
         const val QUERY_ADD_RECIPE_INFORMATION = "addRecipeInformation"
         const val QUERY_FILL_INGREDIENTS = "fillIngredients"
+
+        const val QUERY_SORT = "sort"
+        const val QUERY_SORT_DIRECTION = "sortDirection"
+        const val QUERY_INSTRUCTION_REQUIRED = "instructionsRequired"
+        const val QUERY_ADD_NUTRITION = "addRecipeNutrition"
 
         // Bottom Sheet and Preferences
         const val DEFAULT_RECIPES_NUMBER = "50"

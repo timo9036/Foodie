@@ -25,7 +25,7 @@ class RecipesItemBinding {
         @BindingAdapter("loadImageFromUrl")
         @JvmStatic
         fun loadImageFromUrl(imageView: ImageView, imageUrl: String) {
-            Log.i("Tim", "imageUrl: $imageUrl")
+//            Log.i("Tim", "imageUrl: $imageUrl")
             imageView.load(imageUrl) {
 //                crossfade(300)
                 error(R.drawable.error)

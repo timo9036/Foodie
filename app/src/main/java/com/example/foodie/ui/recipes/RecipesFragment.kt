@@ -136,7 +136,8 @@ class RecipesFragment : Fragment() {
         binding.randomRecipes.offscreenPageLimit = 3
         binding.randomRecipes.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
 
-        binding.randomRecipes.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.randomRecipes.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 sliderHandler.removeCallbacks(sliderRunnable)
@@ -165,7 +166,8 @@ class RecipesFragment : Fragment() {
 
     private fun setupRecyclerView() {
         binding.recyclerview.adapter = myAdapter
-        binding.recyclerview.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.recyclerview.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
         showShimmerEffect()
     }
 
@@ -223,17 +225,20 @@ class RecipesFragment : Fragment() {
     }
 
     private fun requestRandomData() {
-        mainViewModel.getRandomRecipes(recipesViewModel.applyQueries())
+        mainViewModel.getRandomRecipes(recipesViewModel.applyRandomQueries(requireContext(), "5"))
         mainViewModel.randomRecipeResponse.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is NetworkResult.Success -> {
-                    response.data.let {
-                        randomAdapter.setData(it!!)
+                    response.data?.let {
+                        randomAdapter.setData(it)
+                        Log.d("api", "requestRandomApi")
                     }
                 }
+
                 is NetworkResult.Error -> {
                     Toast.makeText(context, response.message.toString(), Toast.LENGTH_SHORT).show()
                 }
+
                 is NetworkResult.Loading -> {
                 }
             }
