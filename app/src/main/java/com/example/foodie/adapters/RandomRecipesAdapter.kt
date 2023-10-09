@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.foodie.dataclass.Result
+import com.example.foodie.models.Result
 import com.example.foodie.databinding.ItemRandomRecipeBinding
-import com.example.foodie.dataclass.FoodRecipe
+import com.example.foodie.models.FoodRecipe
 import com.example.foodie.ui.DetailsActivity
 import com.example.foodie.util.RecipesDiffUtil
 

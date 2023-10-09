@@ -1,5 +1,6 @@
 package com.example.foodie.ui
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -41,7 +42,7 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
     private val binding get() = _binding!!
     private lateinit var mainViewModel: MainViewModel
     private lateinit var recipesViewModel: RecipesViewModel
-    private val myAdapter by lazy { RecipesAdapter() }
+    private val myAdapter by lazy { RecipesAdapter(requireActivity()) }
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var searchJob: Job? = null

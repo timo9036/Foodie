@@ -90,7 +90,9 @@
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:src="@drawable/kitten"
-                    app:riv_corner_radius="80dp" />
+                    android:scaleType="fitXY"
+                    android:background="@drawable/background_about_images"
+                    app:riv_corner_radius="200dp" />
 
                 <TextView
                     android:layout_width="wrap_content"

@@ -1,9 +1,8 @@
 package com.example.foodie.data
 
 import com.example.foodie.data.network.FoodRecipesApi
-import com.example.foodie.dataclass.FoodRecipe
+import com.example.foodie.models.FoodRecipe
 import retrofit2.Response
-import retrofit2.http.QueryMap
 import javax.inject.Inject
 
 //request data from api, inject recipesApi into remote data source

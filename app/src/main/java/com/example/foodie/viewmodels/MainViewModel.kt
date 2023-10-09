@@ -13,7 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.foodie.data.Repository
 import com.example.foodie.data.database.entities.FavoritesEntity
 import com.example.foodie.data.database.entities.RecipesEntity
-import com.example.foodie.dataclass.FoodRecipe
+import com.example.foodie.models.FoodRecipe
 import com.example.foodie.util.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

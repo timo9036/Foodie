@@ -1,60 +1,57 @@
 package com.example.foodie.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import coil.load
-import com.example.foodie.R
-import com.example.foodie.databinding.ItemIngredientsViewpagerBinding
-import com.example.foodie.dataclass.ExtendedIngredient
-import com.example.foodie.util.Constants.Companion.BASE_IMAGE_URL
+import com.example.foodie.databinding.ItemDetailsIngredientsBinding
+import com.example.foodie.models.ExtendedIngredient
 import com.example.foodie.util.RecipesDiffUtil
-import java.util.Locale
+import kotlinx.parcelize.RawValue
 
-class IngredientsAdapter : RecyclerView.Adapter<IngredientsAdapter.MyViewHolder>() {
 
-    private var ingredientsList = emptyList<ExtendedIngredient>()
+class IngredientsAdapter : RecyclerView.Adapter<IngredientsAdapter.IngredientsViewHolder>() {
 
-    class MyViewHolder(val binding: ItemIngredientsViewpagerBinding) :
-        RecyclerView.ViewHolder(binding.root)
+    private var ingredients = emptyList<ExtendedIngredient>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(
-            ItemIngredientsViewpagerBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-        )
+    class IngredientsViewHolder(val binding: ItemDetailsIngredientsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(result: ExtendedIngredient) {
+            binding.ingredient = result
+            binding.executePendingBindings()
+        }
+
+        companion object {
+            fun from(parent: ViewGroup): IngredientsViewHolder {
+                val layoutInflater = LayoutInflater.from(parent.context)
+                val binding = ItemDetailsIngredientsBinding.inflate(layoutInflater, parent, false)
+                return IngredientsViewHolder(binding)
+            }
+        }
+    }
+
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): IngredientsViewHolder {
+        return IngredientsViewHolder.from(parent)
+    }
+
+    override fun onBindViewHolder(holder: IngredientsViewHolder, position: Int) {
+        val current = ingredients[position]
+        holder.bind(current)
+        holder.binding.name.isSelected = true
     }
 
     override fun getItemCount(): Int {
-        return ingredientsList.size
+        return ingredients.size
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.binding.ingredientImageView.load(BASE_IMAGE_URL + ingredientsList[position].image) {
-            crossfade(600)
-            error(R.drawable.error)
-        }
-        holder.binding.ingredientName.text = ingredientsList[position].name.replaceFirstChar {
-            if (it.isLowerCase()) it.titlecase(
-                Locale.ROOT
-            ) else it.toString()
-        }
-        holder.binding.ingredientAmount.text = ingredientsList[position].amount.toString()
-        holder.binding.ingredientUnit.text = ingredientsList[position].unit
-        holder.binding.ingredientConsistency.text = ingredientsList[position].consistency
-        holder.binding.ingredientOriginal.text = ingredientsList[position].original
-    }
-
-    fun setData(newIngredients: List<ExtendedIngredient>) {
-        val ingredientsDiffUtil =
-            RecipesDiffUtil(ingredientsList, newIngredients)
-        val diffUtilResult = DiffUtil.calculateDiff(ingredientsDiffUtil)
-        ingredientsList = newIngredients
+    fun setData(newData: @RawValue List<ExtendedIngredient?>?) {
+        val recipesDiffUtil = RecipesDiffUtil(ingredients, newData!!)
+        val diffUtilResult = DiffUtil.calculateDiff(recipesDiffUtil)
+        ingredients = (newData as List<ExtendedIngredient>?)!!
         diffUtilResult.dispatchUpdatesTo(this)
     }
+
 }

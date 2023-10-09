@@ -1,102 +1,106 @@
 package com.example.foodie.ui
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import androidx.activity.viewModels
+import android.view.WindowManager
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
-import androidx.navigation.navArgs
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.foodie.R
-import com.example.foodie.adapters.PagerAdapter
+import com.example.foodie.adapters.IngredientsAdapter
+import com.example.foodie.adapters.StepsAdapter
 import com.example.foodie.data.database.entities.FavoritesEntity
 import com.example.foodie.databinding.ActivityDetailsBinding
-import com.example.foodie.ui.viewpager.IngredientsFragment
-import com.example.foodie.ui.viewpager.InstructionsFragment
-import com.example.foodie.ui.viewpager.OverviewFragment
-import com.example.foodie.util.Constants.Companion.RECIPE_RESULT_KEY
+import com.example.foodie.models.Step
 import com.example.foodie.viewmodels.MainViewModel
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
+import com.example.foodie.models.Result
+import kotlinx.parcelize.RawValue
 
 @AndroidEntryPoint
 class DetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailsBinding
-
-    private val args by navArgs<DetailsActivityArgs>()
-    private val mainViewModel: MainViewModel by viewModels()
+    private lateinit var recipe: Result
+    private lateinit var mainViewModel: MainViewModel
 
     private var recipeSaved = false
     private var savedRecipeId = 0
+    private val ingredientsAdapter by lazy { IngredientsAdapter() }
+    private val stepsAdapter by lazy { StepsAdapter() }
 
-    private lateinit var menuItem: MenuItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        recipe = intent.extras!!.getParcelable("result")!!
+        mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        binding.result = recipe
 
-        //actionbar
-        setSupportActionBar(binding.toolbar)
-        binding.toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        binding.apply {
+            window.apply {
+                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                statusBarColor = Color.TRANSPARENT
+            }
 
-        val fragments = ArrayList<Fragment>()
-        fragments.add(OverviewFragment())
-        fragments.add(IngredientsFragment())
-        fragments.add(InstructionsFragment())
+            ingredientsRecyclerview.layoutManager =
+                LinearLayoutManager(this@DetailsActivity, LinearLayoutManager.HORIZONTAL, false)
+            ingredientsRecyclerview.adapter = ingredientsAdapter
+            ingredientsAdapter.setData(recipe.extendedIngredients)
 
-        val titles = ArrayList<String>()
-        titles.add("Overview")
-        titles.add("Ingredients")
-        titles.add("Instructions")
+            stepsRecyclerView.layoutManager =
+                LinearLayoutManager(this@DetailsActivity, LinearLayoutManager.VERTICAL, false)
+            stepsRecyclerView.adapter = stepsAdapter
+            stepsAdapter.setData(recipe.analyzedInstructions?.get(0)?.steps as @RawValue List<Step>)
 
-        val resultBundle = Bundle()
-        resultBundle.putParcelable(RECIPE_RESULT_KEY, args.result)
+            addToFavBtn.setOnClickListener {
+                if (recipeSaved) {
+                    removeFromFavorites(favIcon)
+                } else {
+                    saveToFavorites(favIcon)
+                }
+            }
 
-        val pagerAdapter = PagerAdapter(
-            resultBundle,
-            fragments,
-            this
+            backBtn.setOnClickListener {
+                finish()
+            }
+            checkSavedRecipes()
+        }
+    }
+
+    private fun saveToFavorites(icon: ImageView) {
+        val favoritesEntity = FavoritesEntity(
+            0, recipe
         )
-
-//        binding.viewPager2.isUserInputEnabled = false
-        binding.viewPager2.apply {
-            adapter = pagerAdapter
-        }
-
-        TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
-            tab.text = titles[position]
-        }.attach()
+        mainViewModel.insertFavoriteRecipe(favoritesEntity)
+        changeMenuItemColor(icon, R.color.red)
+        showSnackBar("Recipe Saved")
+        recipeSaved = true
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.details_menu, menu)
-        menuItem = menu!!.findItem(R.id.save_to_favorites_menu)
-        checkSavedRecipes(menuItem)
-        return true
+    private fun removeFromFavorites(icon: ImageView) {
+        val favoritesEntity = FavoritesEntity(
+            savedRecipeId,
+            recipe
+        )
+        mainViewModel.deleteFavoriteRecipe(favoritesEntity)
+        changeMenuItemColor(icon, R.color.black)
+        showSnackBar("Removed from Favorites")
+        recipeSaved = false
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        } else if (item.itemId == R.id.save_to_favorites_menu && !recipeSaved) {
-            saveToFavorites(item)
-        } else if (item.itemId == R.id.save_to_favorites_menu && recipeSaved) {
-            removeFromFavorites(item)
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
-    private fun checkSavedRecipes(menuItem: MenuItem) {
+    private fun checkSavedRecipes() {
         mainViewModel.readFavoriteRecipes.observe(this) { favoritesEntity ->
             try {
                 for (savedRecipe in favoritesEntity) {
-                    if (savedRecipe.result.recipeId == args.result.recipeId) {
-                        changeMenuItemColor(menuItem, R.color.yellow)
+                    if (savedRecipe.result.id == recipe.id) {
+                        changeMenuItemColor(binding.favIcon, R.color.red)
                         savedRecipeId = savedRecipe.id
                         recipeSaved = true
                     }
@@ -107,26 +111,7 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveToFavorites(item: MenuItem) {
-        val favoritesEntity = FavoritesEntity(
-            0, args.result
-        )
-        mainViewModel.insertFavoriteRecipe(favoritesEntity)
-        changeMenuItemColor(item, R.color.yellow)
-        showSnackBar("Recipe Saved")
-        recipeSaved = true
-    }
 
-    private fun removeFromFavorites(item: MenuItem) {
-        val favoritesEntity = FavoritesEntity(
-            savedRecipeId,
-            args.result
-        )
-        mainViewModel.deleteFavoriteRecipe(favoritesEntity)
-        changeMenuItemColor(item, R.color.white)
-        showSnackBar("Removed from Favorites")
-        recipeSaved = false
-    }
 
     private fun showSnackBar(message: String) {
         Snackbar.make(
@@ -135,12 +120,8 @@ class DetailsActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun changeMenuItemColor(item: MenuItem, color: Int) {
-        item.icon?.setTint(ContextCompat.getColor(this, color))
+    private fun changeMenuItemColor(icon: ImageView, color: Int) {
+        icon.setColorFilter(ContextCompat.getColor(this, color))
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        changeMenuItemColor(menuItem, R.color.white)
-    }
 }
