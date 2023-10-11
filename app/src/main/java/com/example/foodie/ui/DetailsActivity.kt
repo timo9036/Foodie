@@ -56,7 +56,14 @@ class DetailsActivity : AppCompatActivity() {
             stepsRecyclerView.layoutManager =
                 LinearLayoutManager(this@DetailsActivity, LinearLayoutManager.VERTICAL, false)
             stepsRecyclerView.adapter = stepsAdapter
-            stepsAdapter.setData(recipe.analyzedInstructions?.get(0)?.steps as @RawValue List<Step>)
+//            stepsAdapter.setData(recipe.analyzedInstructions?.get(0)?.steps as @RawValue List<Step>)
+            val steps = recipe.analyzedInstructions?.getOrNull(0)?.steps
+            if (steps != null) {
+                stepsAdapter.setData(steps as? List<Step> ?: emptyList())
+            } else {
+                // Handle the case when steps are null or not a list
+                stepsAdapter.setData(emptyList())
+            }
 
             addToFavBtn.setOnClickListener {
                 if (recipeSaved) {

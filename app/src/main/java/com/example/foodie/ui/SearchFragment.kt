@@ -73,6 +73,8 @@ class SearchFragment : Fragment(), SearchView.OnQueryTextListener {
                     val searchView = search.actionView as? SearchView
                     searchView?.isSubmitButtonEnabled = true
                     searchView?.setOnQueryTextListener(this@SearchFragment)
+
+//                    searchView?.isIconified = false
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
