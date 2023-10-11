@@ -59,7 +59,8 @@ class FavoriteRecipesAdapter(
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         myViewHolders.add(holder)
-        rootView = holder.itemView.rootView
+//        rootView = holder.itemView.rootView
+        rootView = holder.itemView
 
         val currentRecipe = favoriteRecipes[position]
         holder.bind(currentRecipe)
@@ -161,7 +162,9 @@ class FavoriteRecipesAdapter(
                 "${selectedRecipes.size} Recipes removed"
             }
 
-            showSnackBar(message)
+            if (rootView.isAttachedToWindow) {
+                showSnackBar(message)
+            }
 
             multiSelection = false
             selectedRecipes.clear()

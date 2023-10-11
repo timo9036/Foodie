@@ -65,6 +65,6 @@
         tools:layout="@layout/activity_details" >
         <argument
             android:name="result"
-            app:argType="com.example.foodie.dataclass.Result" />
+            app:argType="com.example.foodie.models.Result" />
     </activity>
 </navigation>

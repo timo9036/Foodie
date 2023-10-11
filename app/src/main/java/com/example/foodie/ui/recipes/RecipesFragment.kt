@@ -1,5 +1,6 @@
 package com.example.foodie.ui.recipes
 
+import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -70,7 +71,7 @@ class RecipesFragment : Fragment() {
     //This is a read-only property that provides a non-nullable version of _binding
     private val binding get() = _binding!!
 
-    private val myAdapter by lazy { RecipesAdapter() }
+    private val myAdapter by lazy { RecipesAdapter(requireActivity()) }
 
     private val randomAdapter by lazy { RandomRecipesAdapter(requireActivity()) }
     private var sliderHandler: Handler = Handler(Looper.getMainLooper())

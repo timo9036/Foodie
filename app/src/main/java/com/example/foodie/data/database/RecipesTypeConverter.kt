@@ -1,8 +1,8 @@
 package com.example.foodie.data.database
 
 import androidx.room.TypeConverter
-import com.example.foodie.dataclass.FoodRecipe
-import com.example.foodie.dataclass.Result
+import com.example.foodie.models.FoodRecipe
+import com.example.foodie.models.Result
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

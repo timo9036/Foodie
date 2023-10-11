@@ -7,7 +7,7 @@
 
         <variable
             name="result"
-            type="com.example.foodie.dataclass.Result" />
+            type="com.example.foodie.models.Result" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,4 +1,4 @@
-package com.example.foodie.dataclass
+package com.example.foodie.models
 
 
 import com.google.gson.annotations.SerializedName
