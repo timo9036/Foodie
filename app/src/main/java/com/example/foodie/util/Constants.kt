@@ -12,6 +12,8 @@ class Constants {
 
 //for testing only        b87c60f790824175a6d369137c97f6aa
 
+        const val OPENAI_KEY = "Bearer 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"
+
         const val RECIPE_RESULT_KEY = "recipeBundle"
 
         // API Query Keys
