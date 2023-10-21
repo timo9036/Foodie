@@ -35,6 +35,7 @@ import com.android.volley.toolbox.Volley
 import com.example.foodie.BuildConfig
 import com.example.foodie.R
 import com.example.foodie.databinding.FragmentGptBinding
+import com.example.foodie.util.Constants.Companion.OPENAI_KEY
 import com.example.foodie.util.Message
 import com.example.foodie.util.User
 import com.stfalcon.chatkit.commons.ImageLoader
@@ -45,8 +46,6 @@ import org.json.JSONObject
 import java.util.Calendar
 import java.util.Locale
 
-
-//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
 class GptFragment : Fragment() {
 
     private var _binding: FragmentGptBinding? = null
@@ -287,8 +286,7 @@ class GptFragment : Fragment() {
                 val map = HashMap<String, String>()
                 map["Content-Type"] = "application/json"
                 map["Authorization"] =
-                        BuildConfig.OPEN_AI_KEY
-//                    "Bearer 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"
+                    OPENAI_KEY
                 return map
             }
         }
@@ -362,7 +360,7 @@ class GptFragment : Fragment() {
                 val map = HashMap<String, String>()
                 map["Content-Type"] = "application/json"
                 map["Authorization"] =
-                    "Bearer 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"
+                    OPENAI_KEY
                 return map
             }
         }

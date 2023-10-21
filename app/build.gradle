@@ -17,10 +17,8 @@ android {
 
         def properties = new Properties()
         properties.load(rootProject.file('local.properties').newInputStream())
-
-
         buildConfigField 'String', 'OPEN_AI_KEY', "\"${properties.getProperty('OPEN_AI_KEY')}\""
-
+        buildConfigField 'String', 'FOOD_API_KEY', "\"${properties.getProperty('FOOD_API_KEY')}\""
 
         applicationId "com.example.foodie"
         minSdk 26

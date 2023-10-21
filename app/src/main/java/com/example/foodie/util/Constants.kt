@@ -1,19 +1,15 @@
 package com.example.foodie.util
 
+import com.example.foodie.BuildConfig
+
 class Constants {
 
     companion object {
 
         const val BASE_URL = "https://api.spoonacular.com"
         const val BASE_IMAGE_URL = "https://spoonacular.com/cdn/ingredients_100x100/"
-        const val API_KEY = "439cf738b222477c842bf42eca689ee6"
-//        439cf738b222477c842bf42eca689ee6
-//        34d8a406c589452f80d325d51a307fe6
-
-//for testing only        b87c60f790824175a6d369137c97f6aa
-
-        const val OPENAI_KEY = "Bearer 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"
-
+        const val FOOD_API_KEY = BuildConfig.FOOD_API_KEY
+        const val OPENAI_KEY = BuildConfig.OPEN_AI_KEY
         const val RECIPE_RESULT_KEY = "recipeBundle"
 
         // API Query Keys
