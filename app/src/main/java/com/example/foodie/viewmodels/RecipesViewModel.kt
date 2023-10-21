@@ -1,7 +1,6 @@
 package com.example.foodie.viewmodels
 
 import android.app.Application
-import android.app.ProgressDialog.show
 import android.content.Context
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
@@ -9,7 +8,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.foodie.data.DataStoreRepository
 import com.example.foodie.data.MealAndDietType
-import com.example.foodie.util.Constants.Companion.API_KEY
+import com.example.foodie.util.Constants.Companion.FOOD_API_KEY
 import com.example.foodie.util.Constants.Companion.DEFAULT_DIET_TYPE
 import com.example.foodie.util.Constants.Companion.DEFAULT_MEAL_TYPE
 import com.example.foodie.util.Constants.Companion.DEFAULT_RECIPES_NUMBER
@@ -24,10 +23,8 @@ import com.example.foodie.util.Constants.Companion.QUERY_SEARCH
 import com.example.foodie.util.Constants.Companion.QUERY_SORT
 import com.example.foodie.util.Constants.Companion.QUERY_SORT_DIRECTION
 import com.example.foodie.util.Constants.Companion.QUERY_TYPE
-import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -86,7 +83,7 @@ class RecipesViewModel @Inject constructor(
         val queries: HashMap<String, String> = HashMap()
 
         queries[QUERY_NUMBER] = DEFAULT_RECIPES_NUMBER
-        queries[QUERY_API_KEY] = API_KEY
+        queries[QUERY_API_KEY] = FOOD_API_KEY
         queries[QUERY_ADD_RECIPE_INFORMATION] = "true"
         queries[QUERY_FILL_INGREDIENTS] = "true"
 
@@ -116,7 +113,7 @@ class RecipesViewModel @Inject constructor(
         mealType = sharedPreference.getString("meal", DEFAULT_MEAL_TYPE).toString()
         dietType = sharedPreference.getString("diet", DEFAULT_DIET_TYPE).toString()
         queries[QUERY_NUMBER] = recipeNumber
-        queries[QUERY_API_KEY] = API_KEY
+        queries[QUERY_API_KEY] = FOOD_API_KEY
         if (recipeNumber != "5") {
             queries[QUERY_TYPE] = mealType
             queries[QUERY_DIET] = dietType
@@ -135,7 +132,7 @@ class RecipesViewModel @Inject constructor(
         val queries: HashMap<String, String> = HashMap()
         queries[QUERY_SEARCH]= searchQuery
         queries[QUERY_NUMBER]= DEFAULT_RECIPES_NUMBER
-        queries[QUERY_API_KEY]= API_KEY
+        queries[QUERY_API_KEY]= FOOD_API_KEY
         queries[QUERY_ADD_RECIPE_INFORMATION]= "true"
         queries[QUERY_FILL_INGREDIENTS]= "true"
         return queries

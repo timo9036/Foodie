@@ -17,6 +17,8 @@
     <color name="green">#00C980</color>
     <color name="blue">#0000ff</color>
 
+    <color name="transparent">#00FFFFFF</color>
+
 
     <color name="backgroundColor">@color/white</color>
     <color name="placeholderColor">@color/mediumGray</color>
