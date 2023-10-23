@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import coil.load
 import com.android.volley.Request
 import com.android.volley.Response
@@ -38,6 +39,7 @@ import com.example.foodie.databinding.FragmentGptBinding
 import com.example.foodie.util.Constants.Companion.OPENAI_KEY
 import com.example.foodie.util.Message
 import com.example.foodie.util.User
+import com.example.foodie.viewmodels.GptViewModel
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
@@ -51,12 +53,21 @@ class GptFragment : Fragment() {
     private var _binding: FragmentGptBinding? = null
     private val binding get() = _binding!!
 
-    lateinit var messagesList: MessagesList
-    lateinit var us: User
-    lateinit var chatGpt: User
+    private lateinit var viewModel: GptViewModel
+
+//    lateinit var messagesList: MessagesList
+//    lateinit var us: User
+//    lateinit var chatGpt: User
     lateinit var adapter: MessagesListAdapter<Message>
     lateinit var tts: TextToSpeech
     lateinit var speechRecognizer: SpeechRecognizer
+    private val imageLoader: ImageLoader = object : ImageLoader {
+        override fun loadImage(imageView: ImageView?, url: String?, payload: Any?) {
+            imageView?.load(url) {
+                placeholder(R.drawable.loading)
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,23 +80,20 @@ class GptFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentGptBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this).get(GptViewModel::class.java)
 
-        messagesList = binding.messagesList
+        setupAdapter()
+        observeViewModel()
 
-        var imageLoader: ImageLoader = object : ImageLoader {
-            override fun loadImage(imageView: ImageView?, url: String?, payload: Any?) {
-                imageView?.load(url) {
-                    placeholder(R.drawable.loading)
-                }
-            }
-        }
 
-        adapter =
-            MessagesListAdapter<Message>("1", imageLoader)
-        messagesList.setAdapter(adapter)
 
-        us = User("1", "Tim", "")
-        chatGpt = User("2", "ChatGPT", "")
+//        var imageLoader: ImageLoader = object : ImageLoader {
+//            override fun loadImage(imageView: ImageView?, url: String?, payload: Any?) {
+//                imageView?.load(url) {
+//                    placeholder(R.drawable.loading)
+//                }
+//            }
+//        }
 
         tts = TextToSpeech(requireContext(), TextToSpeech.OnInitListener {
             if (it != TextToSpeech.ERROR) {
@@ -93,33 +101,47 @@ class GptFragment : Fragment() {
             }
         })
 
+//        messagesList = binding.messagesList
+//        adapter =
+//            MessagesListAdapter<Message>("1", imageLoader)
+//        messagesList.setAdapter(adapter)
+//
+//        us = User("1", "Tim", "")
+//        chatGpt = User("2", "ChatGPT", "")
+//
+//        binding.sendBtn.setOnClickListener {
+//            if (binding.editText.text.trim().isEmpty()) {
+//                return@setOnClickListener
+//            }
+//            var message: Message =
+//                Message("m1", binding.editText.text.toString(), us, Calendar.getInstance().time, "")
+//            adapter.addToStart(message, true)
+//            if (binding.editText.text.toString().startsWith("generate image")) {
+//                val placeholderMessage = Message(
+//                    "m_temp",
+//                    "image",
+//                    chatGpt,
+//                    Calendar.getInstance().time,
+//                    "https://static.vecteezy.com/system/resources/thumbnails/011/299/215/small/simple-loading-or-buffering-icon-design-png.png"
+//                )
+//                adapter.addToStart(placeholderMessage, true)
+//                openAiGenerateImage(binding.editText.text.toString(), placeholderMessage)
+//            } else {
+//                openAiGenerateText(binding.editText.text.toString())
+//            }
+//            hideKeyboard()
+//            binding.editText.text.clear()
+//            binding.lottieLoadingAnimation.visibility = View.VISIBLE
+//            binding.lottieLoadingAnimation.playAnimation()
+//            binding.textViewWait.visibility = View.VISIBLE
+//            binding.scrollView.fullScroll(View.FOCUS_DOWN)
+//        }
+
         binding.sendBtn.setOnClickListener {
-            if (binding.editText.text.trim().isEmpty()) {
-                return@setOnClickListener
-            }
-            var message: Message =
-                Message("m1", binding.editText.text.toString(), us, Calendar.getInstance().time, "")
-            adapter.addToStart(message, true)
-            if (binding.editText.text.toString().startsWith("generate image")) {
-                val placeholderMessage = Message(
-                    "m_temp",
-                    "image",
-                    chatGpt,
-                    Calendar.getInstance().time,
-                    "https://static.vecteezy.com/system/resources/thumbnails/011/299/215/small/simple-loading-or-buffering-icon-design-png.png"
-                )
-                adapter.addToStart(placeholderMessage, true)
-                openAiGenerateImage(binding.editText.text.toString(), placeholderMessage)
-            } else {
-                openAiGenerateText(binding.editText.text.toString())
-            }
-            hideKeyboard()
-            binding.editText.text.clear()
-            binding.lottieLoadingAnimation.visibility = View.VISIBLE
-            binding.lottieLoadingAnimation.playAnimation()
-            binding.textViewWait.visibility = View.VISIBLE
-            binding.scrollView.fullScroll(View.FOCUS_DOWN)
+            val inputText = binding.editText.text.toString()
+            viewModel.handleInput(inputText)
         }
+
 
         binding.sendBtn.setOnLongClickListener {
             if (ContextCompat.checkSelfPermission(
@@ -177,13 +199,13 @@ class GptFragment : Fragment() {
             override fun onResults(results: Bundle?) {
                 var arrayOfRes = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 var message: Message =
-                    Message("m1", arrayOfRes!!.get(0), us, Calendar.getInstance().time, "")
+                    Message("m1", arrayOfRes!!.get(0), viewModel.us, Calendar.getInstance().time, "")
                 adapter.addToStart(message, true)
                 if (arrayOfRes!!.get(0).startsWith("generate image")) {
                     val placeholderMessage = Message(
                         "m_temp",
                         "image",
-                        chatGpt,
+                        viewModel.chatGpt,
                         Calendar.getInstance().time,
                         "https://static.vecteezy.com/system/resources/thumbnails/011/299/215/small/simple-loading-or-buffering-icon-design-png.png"
                     )
@@ -208,6 +230,32 @@ class GptFragment : Fragment() {
 
         return binding.root
     }
+
+    private fun setupAdapter() {
+        adapter = MessagesListAdapter<Message>("1", imageLoader)
+        binding.messagesList.setAdapter(adapter)
+    }
+
+    private fun observeViewModel() {
+        viewModel.uiActions.observe(viewLifecycleOwner) { action ->
+            when (action) {
+                is GptViewModel.UiAction.AddMessage -> adapter.addToStart(action.message, true)
+                is GptViewModel.UiAction.GenerateImage -> openAiGenerateImage(action.input, action.placeholderMessage)
+                is GptViewModel.UiAction.GenerateText -> openAiGenerateText(action.input)
+                is GptViewModel.UiAction.HandleUI -> handleUI()
+            }
+        }
+    }
+
+    private fun handleUI() {
+        hideKeyboard()
+        binding.editText.text.clear()
+        binding.lottieLoadingAnimation.visibility = View.VISIBLE
+        binding.lottieLoadingAnimation.playAnimation()
+        binding.textViewWait.visibility = View.VISIBLE
+        binding.scrollView.fullScroll(View.FOCUS_DOWN)
+    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.chefgpt_menu, menu)
@@ -258,7 +306,7 @@ class GptFragment : Fragment() {
                         .getString("content")
 //                binding.result.text = answer
                 var message: Message =
-                    Message("m2", answer.trim(), chatGpt, Calendar.getInstance().time, "")
+                    Message("m2", answer.trim(), viewModel.chatGpt, Calendar.getInstance().time, "")
                 adapter.addToStart(message, true)
 
                 if (enableTTS) {
@@ -332,7 +380,7 @@ class GptFragment : Fragment() {
                     Message(
                         placeholderMessage.messageId,
                         "image",
-                        chatGpt,
+                        viewModel.chatGpt,
                         Calendar.getInstance().time,
                         answer
                     )
