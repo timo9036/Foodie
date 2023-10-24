@@ -15,13 +15,13 @@
 
   <tr>
     <td>
-           <img src="previews/main.jpg" width="400" height="500" alt=".android">
+           <img src="previews/main.jpg" width="400" height="450" alt=".android">
    </td>
    <td>
-           <img src="previews/details.jpg" width="400" height="500" alt=".android">
+           <img src="previews/details.jpg" width="400" height="450" alt=".android">
    </td>
    <td>
-           <img src="previews/search.jpg" width="400"  height="500" alt=".android">
+           <img src="previews/search.jpg" width="400"  height="450" alt=".android">
    </td>
 
  </table>
@@ -37,13 +37,13 @@
   <tr>
    
    <td>
-           <img src="previews/favorites.jpg" width="400" height="500" alt=".android">
+           <img src="previews/favorites.jpg" width="400" height="450" alt=".android">
    </td>
    <td>
-           <img src="previews/chefgpt.jpg" width="400" height="500" alt=".android">
+           <img src="previews/chefgpt.jpg" width="400" height="450" alt=".android">
    </td>
    <td>
-           <img src="previews/about.jpg" width="400" height="500" alt=".android">
+           <img src="previews/about.jpg" width="400" height="450" alt=".android">
    </td>
 
  </table>
