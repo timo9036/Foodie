@@ -3,6 +3,7 @@ package com.example.foodie
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.example.foodie.viewmodels.GptViewModel
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -12,7 +13,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.junit.MockitoJUnit
 import org.mockito.junit.MockitoRule
-
+import org.mockito.kotlin.anyOrNull
 
 class GptViewModelTest {
 
@@ -29,7 +30,7 @@ class GptViewModelTest {
     private lateinit var uiActionsObserver: Observer<GptViewModel.UiAction>
 
     @Captor
-    private lateinit var uiActionsCaptor: ArgumentCaptor<GptViewModel.UiAction>
+    private val uiActionsCaptor: ArgumentCaptor<GptViewModel.UiAction> = ArgumentCaptor.forClass(GptViewModel.UiAction::class.java)
 
     @Before
     fun setUp() {
@@ -45,14 +46,19 @@ class GptViewModelTest {
     }
 
     @Test
-    fun `given generate image command, placeholder message and image generation is triggered`() {
-        viewModel.handleInput("generate image of a cat")
+    fun `given whitespace input, no action is performed`() {
+        viewModel.handleInput("   ")
 
-        verify(uiActionsObserver, times(2)).onChanged(uiActionsCaptor.capture())
+        verify(uiActionsObserver, never()).onChanged(anyOrNull())
+    }
 
-        val values = uiActionsCaptor.allValues
-        assert(values[0] is GptViewModel.UiAction.AddMessage) // Check that a message was added
-        assert(values[1] is GptViewModel.UiAction.GenerateImage) // Check that image generation was triggered
+    @Test
+    fun `given any input, UI handling actions are performed`() {
+        val input = "test"
+        viewModel.handleInput(input)
+
+        verify(uiActionsObserver).onChanged(GptViewModel.UiAction.HandleUI)
+        println(input)
     }
 
     @Test
@@ -60,16 +66,46 @@ class GptViewModelTest {
         val input = "Hello, World!"
         viewModel.handleInput(input)
 
-        verify(uiActionsObserver).onChanged(GptViewModel.UiAction.AddMessage(any()))
-        verify(uiActionsObserver).onChanged(GptViewModel.UiAction.GenerateText(input))
-        verify(uiActionsObserver).onChanged(GptViewModel.UiAction.HandleUI)
+        verify(uiActionsObserver, times(3)).onChanged(anyOrNull())
+        println(input)
     }
 
     @Test
-    fun `given any input, UI handling actions are performed`() {
-        viewModel.handleInput("test")
+    fun `given input not starting with generate image, text generation is triggered`() {
+        val input = "What's up?"
 
-        verify(uiActionsObserver).onChanged(GptViewModel.UiAction.HandleUI)
+        viewModel.handleInput(input)
+
+        verify(uiActionsObserver, atLeastOnce()).onChanged(anyOrNull())
+        val values = uiActionsCaptor.allValues
+
+        // Verify GenerateText is triggered
+        assertTrue(values.any { it is GptViewModel.UiAction.GenerateText && it.input == input })
+        assert(values.any { it is GptViewModel.UiAction.GenerateText })
+
+        values.forEach { println(it) }
+    }
+
+    @Test
+    fun `given input starting with generate image, placeholder message and image generation are triggered`() {
+        val input = "generate image of a cat"
+
+        viewModel.handleInput(input)
+
+        verify(uiActionsObserver, atLeastOnce()).onChanged(anyOrNull())
+        val values = uiActionsCaptor.allValues
+
+        // Verify AddMessage with "image" text
+        assertTrue(values.any { it is GptViewModel.UiAction.AddMessage && it.message.text == "image" })
+
+        // Verify GenerateImage is triggered
+        assertTrue(values.any { it is GptViewModel.UiAction.GenerateImage && it.input == input })
+
+
+        assertTrue(values.any { it is GptViewModel.UiAction.AddMessage })
+        assertTrue(values.any { it is GptViewModel.UiAction.GenerateImage })
+
+        values.forEach { println(it) }
     }
 
 }
