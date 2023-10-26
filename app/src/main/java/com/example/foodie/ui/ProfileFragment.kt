@@ -34,7 +34,7 @@ class ProfileFragment : Fragment() {
 
 
         binding.linkedInLink.setOnClickListener {
-            val recipeUrl: Uri = Uri.parse("https://www.linkedin.com/in/timothy-l-338875249/")
+            val recipeUrl: Uri = Uri.parse("https://www.linkedin.com/in/timothysliu/")
             val intent = Intent(Intent.ACTION_VIEW, recipeUrl)
             intent.addCategory(Intent.CATEGORY_BROWSABLE)
             intent.addCategory(Intent.CATEGORY_DEFAULT)
