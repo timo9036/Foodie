@@ -71,7 +71,6 @@ Explore the app through these stunning visuals!
 Explore the technology stack that powers Foodie - the recipe app for food enthusiasts!
 </p>
 
----
 
 <p>
 <strong>Kotlin</strong> - First class and official programming language for Android development.
@@ -143,8 +142,11 @@ Explore the technology stack that powers Foodie - the recipe app for food enthus
 <strong>Gradle Kotlin DSL</strong> - For writing Gradle build scripts using Kotlin.
 </p>
 
----
+## Architecture
 
+Foodie is based on MVVM architecture and repository pattern.
+
+![architecture](https://developer.android.com/topic/libraries/architecture/images/final-architecture.png)
 
 ## ⬇️ Installation
 
