@@ -24,6 +24,8 @@ Foodie is an app designed for food lovers who enjoy exploring new recipes and cu
 7. [Contributing](#-contributing)
 8. [License](#-license)
 
+---
+
 ## 📸 Screenshots
 
 Explore the app through these stunning visuals!
@@ -142,7 +144,7 @@ Foodie is based on [***MVVM (Model View View-Model)***](https://developer.androi
     |
     ├── 🔧utils               # Utility classes and Kotlin extensions to provide common functionalities across the application
     |
-    └── 🧠viewmodels          # ViewModel classes responsible for preparing and managing the data for UI components and handling the communication with the data part of the application
+    └── 🧠viewmodels          # ViewModel classes responsible for preparing and managing the data for UI components 
 
 ## ⬇️ Installation
 
