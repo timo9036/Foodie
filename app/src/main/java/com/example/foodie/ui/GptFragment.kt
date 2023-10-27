@@ -40,6 +40,7 @@ import com.example.foodie.util.Constants.Companion.OPENAI_KEY
 import com.example.foodie.util.Message
 import com.example.foodie.util.User
 import com.example.foodie.viewmodels.GptViewModel
+import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
@@ -140,6 +141,7 @@ class GptFragment : Fragment() {
         binding.sendBtn.setOnClickListener {
             val inputText = binding.editText.text.toString()
             viewModel.handleInput(inputText)
+            handleUI()
         }
 
 
@@ -242,7 +244,6 @@ class GptFragment : Fragment() {
                 is GptViewModel.UiAction.AddMessage -> adapter.addToStart(action.message, true)
                 is GptViewModel.UiAction.GenerateImage -> openAiGenerateImage(action.input, action.placeholderMessage)
                 is GptViewModel.UiAction.GenerateText -> openAiGenerateText(action.input)
-                is GptViewModel.UiAction.HandleUI -> handleUI()
             }
         }
     }
@@ -323,12 +324,13 @@ class GptFragment : Fragment() {
                 binding.lottieLoadingAnimation.pauseAnimation()
                 binding.textViewWait.visibility = View.GONE
                 binding.scrollView.fullScroll(View.FOCUS_DOWN)
+                context?.let {
                 Toast.makeText(
                     requireContext(),
                     "Network error, please try again",
                     Toast.LENGTH_SHORT
                 ).show()
-            }) {
+                }}) {
 
             override fun getHeaders(): MutableMap<String, String> {
                 val map = HashMap<String, String>()
@@ -442,6 +444,10 @@ class GptFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        if (isRemoving || requireActivity().isFinishing) {
+            // Clear the ViewModel
+            viewModelStore.clear()
+        }
 //        _binding = null
     }
 }

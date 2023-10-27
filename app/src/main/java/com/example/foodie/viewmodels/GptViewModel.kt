@@ -36,13 +36,11 @@ class GptViewModel : ViewModel() {
         } else {
             _uiActions.value = UiAction.GenerateText(input)
         }
-        _uiActions.value = UiAction.HandleUI
     }
 
     sealed class UiAction {
         data class AddMessage(val message: Message) : UiAction()
         data class GenerateImage(val input: String, val placeholderMessage: Message) : UiAction()
         data class GenerateText(val input: String) : UiAction()
-        object HandleUI : UiAction()
     }
 }
