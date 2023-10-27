@@ -1,14 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".RecipesFragment">
+    android:background="@color/backgroundColor">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <data>
+
+        <variable
+            name="mainViewModel"
+            type="com.example.foodie.viewmodels.MainViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="recipes fragment" />
+        android:layout_height="match_parent">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.recipes.RecipesFragment">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/randomRecipes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/breaker"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/randomRecipes">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:text="Recipes"
+                    android:textColor="@color/darker"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="@id/breaker"
+                    app:layout_constraintStart_toStartOf="@id/breaker"
+                    app:layout_constraintTop_toTopOf="@id/breaker" />
+
+
+                <Button
+                    android:id="@+id/recipes_fab"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="@drawable/menu"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintBottom_toBottomOf="@id/breaker"
+                    app:layout_constraintEnd_toEndOf="@id/breaker"
+                    app:layout_constraintTop_toTopOf="@id/breaker" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <com.facebook.shimmer.ShimmerFrameLayout
+                android:id="@+id/shimmerFrameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/breaker">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="invisible">
+
+                    <include layout="@layout/shimmer_item_recipes" />
+
+                    <include layout="@layout/shimmer_item_recipes" />
+
+                    <include layout="@layout/shimmer_item_recipes" />
+
+                    <include layout="@layout/shimmer_item_recipes" />
+
+                </LinearLayout>
+
+            </com.facebook.shimmer.ShimmerFrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/breaker" />
+
+
+            <ImageView
+                android:id="@+id/error_imageView"
+                readApiResponse="@{mainViewModel.recipesResponse}"
+                readDatabase="@{mainViewModel.readRecipes}"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:alpha="0.5"
+                android:src="@drawable/sad"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.37" />
+
+            <TextView
+                android:id="@+id/error_textView"
+                readApiResponse="@{mainViewModel.recipesResponse}"
+                readDatabase="@{mainViewModel.readRecipes}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:alpha="0.5"
+                android:hint="No Internet Connection"
+                android:textColor="@color/darkGray"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/error_imageView"
+                app:layout_constraintStart_toStartOf="@+id/error_imageView"
+                app:layout_constraintTop_toBottomOf="@+id/error_imageView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>
