@@ -6,9 +6,25 @@ Explore hundreds of delicious recipes at your fingertips!
 </p>
 </p>
 
----
-
 Foodie is an app designed for food lovers who enjoy exploring new recipes and culinary adventures. Whether you're looking for a classic dish or something new and exciting, Foodie has got you covered.
+
+![Profile views](https://komarev.com/ghpvc/?username=timo9036&color=green)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/timo9036/Foodie)
+[![LinkedIn](https://img.shields.io/badge/-LinkedIn-blue?style=flat-square&logo=linkedin)](https://www.linkedin.com/in/timothysliu/)
+[![Email](https://img.shields.io/badge/-Email-orange?style=flat-square&logo=gmail)](mailto:timo9036@hotmail.com)
+
+## Table of Contents
+
+1. [Screenshots](#-screenshots)
+2. [Features](#-features)
+3. [Built With](#-built-with)
+4. [Architecture](#-architecture)
+5. [Package Structure](#-package-structure)
+6. [Installation](#-installation)
+7. [Contributing](#-contributing)
+8. [License](#-license)
+
+---
 
 ## 📸 Screenshots
 
@@ -100,7 +116,7 @@ Foodie is based on [***MVVM (Model View View-Model)***](https://developer.androi
 
 ![architecture](https://developer.android.com/topic/libraries/architecture/images/final-architecture.png)
 
-# 📦 Package Structure
+## 📦 Package Structure
     
     🌐com.example.foodie   # Root Package
     .
