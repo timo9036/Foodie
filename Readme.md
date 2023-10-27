@@ -161,7 +161,7 @@ Loved the app and want to contribute? Great! We welcome contributions. Send a PR
 
 ## 📝 License
 
-Foodie is released under the MIT License. See [LICENSE](LICENSE) for details.
+Foodie is released under the MIT License.
 
 ---
 
