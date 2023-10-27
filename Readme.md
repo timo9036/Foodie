@@ -72,81 +72,62 @@ Explore the technology stack that powers Foodie - the recipe app for food enthus
 </p>
 
 
-<p>
-<strong>Kotlin</strong> - First class and official programming language for Android development.
-</p>
-<p>
-<strong>Coroutines</strong> - For asynchronous and more...
-</p>
-<p>
-<strong>Flow</strong> - A cold asynchronous data stream that sequentially emits values and completes normally or with an exception.
-</p>
-<p>
-<strong>Android Architecture Components</strong> - Collection of libraries that help you design robust, testable, and maintainable apps.
-</p>
-<p>
-<strong>LiveData</strong> - Data objects that notify views when the underlying database changes.
-</p>
-<p>
-<strong>ViewModel</strong> - Stores UI-related data that isn't destroyed on UI changes.
-</p>
-<p>
-<strong>ViewBinding</strong> - Generates a binding class for each XML layout file present in that module and allows you to more easily write code that interacts with views.
-</p>
-<p>
-<strong>Room</strong> - SQLite object mapping library.
-</p>
-<p>
-<strong>DataStore Preferences</strong> - Jetpack DataStore is a data storage solution that allows you to store key-value pairs or typed objects with protocol buffers.
-</p>
-<p>
-<strong>Navigation Component</strong> - Navigation occurs between your app's destinations—that is, anywhere in your app to which users can navigate. These destinations are connected via actions.
-</p>
-<p>
-<strong>Dependency Injection</strong> -
-</p>
-<p>
-<strong>Hilt-Dagger</strong> - Standard library to incorporate Dagger dependency injection into an Android application.
-</p>
-<p>
-<strong>Hilt-ViewModel</strong> - DI for injecting ViewModel.
-</p>
-<p>
-<strong>Retrofit</strong> - A type-safe HTTP client for Android and Java.
-</p>
-<p>
-<strong>OkHttp-Logging-Interceptor</strong> - Logging HTTP request related data.
-</p>
-<p>
-<strong>Gson</strong> - Gson is a Java library that can be used to convert Java Objects into their JSON representation.
-</p>
-<p>
-<strong>Coil-kt</strong> - An image loading library for Android backed by Kotlin Coroutines.
-</p>
-<p>
-<strong>Offline Caching</strong> -
-</p>
-<p>
-<strong>Material Components for Android</strong> - Modular and customizable Material Design UI components for Android.
-</p>
-<p>
-<strong>Menu</strong> - Contextual Menu- Menus are a common user interface component in many types of applications.
-</p>
-<p>
-<strong>Shimmer Effect</strong> - ShimmerRecyclerView is an custom RecyclerView library based on Facebook's Shimmer effect for Android library.
-</p>
-<p>
-<strong>RoundedImageView</strong> - A fast ImageView that supports rounded corners, ovals, and circles.
-</p>
-<p>
-<strong>Gradle Kotlin DSL</strong> - For writing Gradle build scripts using Kotlin.
-</p>
+- [Kotlin](https://kotlinlang.org/) - First class and official programming language for Android development.
+- [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more..
+- [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) - A cold asynchronous data stream that sequentially emits values and completes normally or with an exception.
+- [Android Architecture Components](https://developer.android.com/topic/libraries/architecture) - Collection of libraries that help you design robust, testable, and maintainable apps.
+  - [LiveData](https://developer.android.com/topic/libraries/architecture/livedata) - Data objects that notify views when the underlying database changes.
+  - [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) - Stores UI-related data that isn't destroyed on UI changes. 
+  - [ViewBinding](https://developer.android.com/topic/libraries/view-binding) - Generates a binding class for each XML layout file present in that module and allows you to more easily write code that interacts with views.
+  - [Room](https://developer.android.com/topic/libraries/architecture/room) - SQLite object mapping library.
+  - [DataStore Preferences](https://developer.android.com/topic/libraries/architecture/datastore) - Jetpack DataStore is a data storage solution that allows you to store key-value pairs or typed objects with protocol buffers.
+  - [Navigation Component](https://developer.android.com/guide/navigation/navigation-getting-started) - Navigation occurs between your app's destinations—that is, anywhere in your app to which users can navigate. These destinations are connected via actions.
+- [Dependency Injection](https://developer.android.com/training/dependency-injection) - 
+  - [Hilt-Dagger](https://dagger.dev/hilt/) - Standard library to incorporate Dagger dependency injection into an Android application.
+  - [Hilt-ViewModel](https://developer.android.com/training/dependency-injection/hilt-jetpack) - DI for injecting `ViewModel`.
+- [Retrofit](https://square.github.io/retrofit/) - A type-safe HTTP client for Android and Java.
+- [okhttp-logging-interceptor](https://github.com/square/okhttp/blob/master/okhttp-logging-interceptor/README.md) - logging HTTP request related data.
+- [Gson](https://github.com/google/gson) - Gson is a Java library that can be used to convert Java Objects into their JSON representation
+- [Coil-kt](https://coil-kt.github.io/coil/) - An image loading library for Android backed by Kotlin Coroutines.
+- [Material Components for Android](https://github.com/material-components/material-components-android) - Modular and customizable Material Design UI components for Android.
+- [Menu - Contextual Menu](https://developer.android.com/guide/topics/ui/menus)- Menus are a common user interface component in many types of applications. 
+- [Shimmer Effect](https://github.com/omtodkar/ShimmerRecyclerView) - ShimmerRecyclerView is an custom RecyclerView library based on Facebook's Shimmer effect for Android library
+- [Gradle Kotlin DSL](https://docs.gradle.org/current/userguide/kotlin_dsl.html) - For writing Gradle build scripts using Kotlin.
 
-## Architecture
+## 🏛️ Architecture
 
-Foodie is based on MVVM architecture and repository pattern.
+Foodie is based on [***MVVM (Model View View-Model)***](https://developer.android.com/jetpack/docs/guide#recommended-app-arch) architecture and repository pattern.
 
 ![architecture](https://developer.android.com/topic/libraries/architecture/images/final-architecture.png)
+
+# 📦 Package Structure
+    
+    🌐com.example.foodie   # Root Package
+    .
+    ├──🔌adapters             # Contains adapter classes for RecyclerView, etc
+    |
+    ├──🧬bindingadapters      # Houses binding adapters for view binding
+    |
+    ├── 📁data                # Focused on data handling, manipulation, and retrieval
+    │   ├── 💾database        # Database-related classes
+    │   ├── 📚local           # Pertains to local persistence database, primarily using Room (SQLite)
+    |   │   ├── 🔑dao         # Data Access Object(s) for Room to interact with the database 
+    │   ├── ☁️remote          # Manages remote data operations     
+    |   │   ├── 📡api         # Retrofit API services for remote endpoint communications
+    │   └── 📚repository      # Acts as a single source of truth for all data - both local and remote
+    |
+    ├── 💉di                  # Dependency Injection (DI) related classes           
+    │   └── 🧩module          # DI Modules for managing dependencies
+    |
+    ├── 👤model               # Defines the data models used within the app
+    |
+    ├── 🖼️ui                  # User Interface layer containing views and their related logic
+    │   ├── 📱activities      # Contains Activity classes and their corresponding ViewModel(s)
+    │   └── 🖼️fragments       # Houses Fragment classes along with their ViewModel(s)
+    |
+    ├── 🔧utils               # Utility classes and Kotlin extensions to provide common functionalities across the application
+    |
+    └── 🧠viewmodels          # ViewModel classes responsible for preparing and managing the data for UI components and handling the communication with the data part of the application
 
 ## ⬇️ Installation
 
@@ -155,10 +136,13 @@ To get started with Foodie, follow these steps:
 1. Clone the repository:
 2. Open the project in your favorite Kotlin-supported IDE.
 3. Run the application on your device or emulator.
+4. Replace OpenAI Api Key under com.example.foodie/util/Constants/OPENAI_KEY 
+5. Replace Spoonacular Api Key under com.example.foodie/util/Constants/FOOD_API_KEY
+6. Replace google-services.json under app level folder for Firebase Cloud Messaging
 
 ## 🙋 Contributing
 
-Loved the app and want to contribute? Great! We welcome contributions. Please read our contributing guide to get started.
+Loved the app and want to contribute? Great! We welcome contributions. Send a PR now!
 
 ## 📝 License
 
