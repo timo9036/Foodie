@@ -72,11 +72,12 @@ Explore the app through these stunning visuals!
 
 ## 🌟 Features
 
+- **Instant Notifications:** Stay updated with the latest culinary delights and app updates through Firebase Cloud Messaging.
 - **Explore Recipes:** Browse through a vast collection of recipes.
 - **Details & Ingredients:** Get detailed instructions and ingredients list for each recipe.
 - **Search Functionality:** Find exactly what you're craving with the search feature.
 - **Favorites:** Save your favorite recipes for easy access later.
-- **ChefGPT:** Get creative with our AI-powered recipe suggestions.
+- **ChefGPT:** Get creative with our AI-powered recipe suggestions, with Chat, Image generation, TTS/SST.
 - **Learn About Us:** Discover more about the creators and our mission on the About page.
 
 ## 🛠 Built With
