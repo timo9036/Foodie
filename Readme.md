@@ -18,13 +18,11 @@ Foodie is an app designed for food lovers who enjoy exploring new recipes and cu
 1. [Screenshots](#-screenshots)
 2. [Features](#-features)
 3. [Built With](#-built-with)
-4. [Architecture](#-architecture)
+4. [Architecture](#️-architecture)
 5. [Package Structure](#-package-structure)
-6. [Installation](#-installation)
+6. [Installation](#️-installation)
 7. [Contributing](#-contributing)
 8. [License](#-license)
-
----
 
 ## 📸 Screenshots
 
